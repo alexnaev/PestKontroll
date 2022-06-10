@@ -47,7 +47,7 @@ namespace PestKontroll.Models
         public virtual Company Company { get; set; }
         public virtual ProjectPriority ProjectPriority { get; set; }
 
-        public virtual ICollection<User> Members { get; set; } = new HashSet<User>();
+        public virtual ICollection<PKUser> Members { get; set; } = new HashSet<PKUser>();
         public virtual ICollection<Ticket> Tickets { get; set; } = new HashSet<Ticket>();
     }
 }

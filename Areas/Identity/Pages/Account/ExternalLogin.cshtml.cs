@@ -24,17 +24,17 @@ namespace PestKontroll.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class ExternalLoginModel : PageModel
     {
-        private readonly SignInManager<User> _signInManager;
-        private readonly UserManager<User> _userManager;
-        private readonly IUserStore<User> _userStore;
-        private readonly IUserEmailStore<User> _emailStore;
+        private readonly SignInManager<PKUser> _signInManager;
+        private readonly UserManager<PKUser> _userManager;
+        private readonly IUserStore<PKUser> _userStore;
+        private readonly IUserEmailStore<PKUser> _emailStore;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
 
         public ExternalLoginModel(
-            SignInManager<User> signInManager,
-            UserManager<User> userManager,
-            IUserStore<User> userStore,
+            SignInManager<PKUser> signInManager,
+            UserManager<PKUser> userManager,
+            IUserStore<PKUser> userStore,
             ILogger<ExternalLoginModel> logger,
             IEmailSender emailSender)
         {
@@ -198,11 +198,11 @@ namespace PestKontroll.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private User CreateUser()
+        private PKUser CreateUser()
         {
             try
             {
-                return Activator.CreateInstance<User>();
+                return Activator.CreateInstance<PKUser>();
             }
             catch
             {
@@ -212,13 +212,13 @@ namespace PestKontroll.Areas.Identity.Pages.Account
             }
         }
 
-        private IUserEmailStore<User> GetEmailStore()
+        private IUserEmailStore<PKUser> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<User>)_userStore;
+            return (IUserEmailStore<PKUser>)_userStore;
         }
     }
 }

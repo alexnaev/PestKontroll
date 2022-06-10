@@ -16,10 +16,10 @@ namespace PestKontroll.Areas.Identity.Pages.Account
 {
     public class ConfirmEmailChangeModel : PageModel
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<PKUser> _userManager;
+        private readonly SignInManager<PKUser> _signInManager;
 
-        public ConfirmEmailChangeModel(UserManager<User> userManager, SignInManager<User> signInManager)
+        public ConfirmEmailChangeModel(UserManager<PKUser> userManager, SignInManager<PKUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;

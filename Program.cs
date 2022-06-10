@@ -14,12 +14,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddIdentity<PKUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultUI()
     .AddDefaultTokenProviders();
 builder.Services.AddScoped<IPKRoleService, PKRoleService>();
 builder.Services.AddScoped<IPKCompanyInfoService, PKCompanyInfoService>();
+builder.Services.AddScoped<IPKProjectService, PKProjectService>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

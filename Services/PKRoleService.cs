@@ -9,15 +9,15 @@ namespace PestKontroll.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly UserManager<User> _userManager;
-        public PKRoleService(ApplicationDbContext context, RoleManager<IdentityRole> roleManager, UserManager<User> userManager)
+        private readonly UserManager<PKUser> _userManager;
+        public PKRoleService(ApplicationDbContext context, RoleManager<IdentityRole> roleManager, UserManager<PKUser> userManager)
         {
             _context = context;
             _roleManager = roleManager;
             _userManager = userManager;
         }
 
-        public async Task<bool> AddUserToRoleAsync(User user, string roleName)
+        public async Task<bool> AddUserToRoleAsync(PKUser user, string roleName)
         {
             bool result = (await _userManager.AddToRoleAsync(user, roleName)).Succeeded;
             return result;
@@ -30,40 +30,40 @@ namespace PestKontroll.Services
             return result;
         }
 
-        public async Task<IEnumerable<string>> GetUserRolesAsync(User user)
+        public async Task<IEnumerable<string>> GetUserRolesAsync(PKUser user)
         {
             IEnumerable<string> result = await _userManager.GetRolesAsync(user);
             return result;
         }
 
-        public async Task<List<User>> GetUsersInRoleAsync(string roleName, int companyId)
+        public async Task<List<PKUser>> GetUsersInRoleAsync(string roleName, int companyId)
         {
-            List<User> users = (await _userManager.GetUsersInRoleAsync(roleName)).ToList();
-            List<User> result = users.Where(u => u.CompanyId == companyId).ToList();
+            List<PKUser> users = (await _userManager.GetUsersInRoleAsync(roleName)).ToList();
+            List<PKUser> result = users.Where(u => u.CompanyId == companyId).ToList();
             return result;
         }
 
-        public async Task<List<User>> GetUsersNotInRoleAsync(string roleName, int companyId)
+        public async Task<List<PKUser>> GetUsersNotInRoleAsync(string roleName, int companyId)
         {
             List<string> userIds = (await _userManager.GetUsersInRoleAsync(roleName)).Select(u => u.Id).ToList();
-            List<User> roleUsers = _context.Users.Where(u => !userIds.Contains(u.Id)).ToList();
-            List<User> result = roleUsers.Where(u => u.CompanyId == companyId).ToList();
+            List<PKUser> roleUsers = _context.Users.Where(u => !userIds.Contains(u.Id)).ToList();
+            List<PKUser> result = roleUsers.Where(u => u.CompanyId == companyId).ToList();
             return result;
         }
 
-        public async Task<bool> IsUserInRoleAsync(User user, string roleName)
+        public async Task<bool> IsUserInRoleAsync(PKUser user, string roleName)
         {
             bool result = await _userManager.IsInRoleAsync(user, roleName);
             return result;
         }
 
-        public async Task<bool> RemoveUserFromRoleAsync(User user, string roleName)
+        public async Task<bool> RemoveUserFromRoleAsync(PKUser user, string roleName)
         {
             bool result = (await _userManager.RemoveFromRoleAsync(user, roleName)).Succeeded;
             return result;
         }
 
-        public async Task<bool> RemoveUserFromRolesAsync(User user, IEnumerable<string> roles)
+        public async Task<bool> RemoveUserFromRolesAsync(PKUser user, IEnumerable<string> roles)
         {
             bool result = (await _userManager.RemoveFromRolesAsync(user, roles)).Succeeded;
             return result;

@@ -12,9 +12,9 @@ namespace PestKontroll.Services
         {
             _context = context;
         }
-        public async Task<List<User>> GetAllMembersAsync(int companyId)
+        public async Task<List<PKUser>> GetAllMembersAsync(int companyId)
         {
-            List<User> result = new();
+            List<PKUser> result = new();
             result = await _context.Users.Where(u => u.CompanyId == companyId).ToListAsync();
             return result;
         }

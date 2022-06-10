@@ -19,13 +19,13 @@ namespace PestKontroll.Areas.Identity.Pages.Account
 {
     public class LoginWith2faModel : PageModel
     {
-        private readonly SignInManager<User> _signInManager;
-        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<PKUser> _signInManager;
+        private readonly UserManager<PKUser> _userManager;
         private readonly ILogger<LoginWith2faModel> _logger;
 
         public LoginWith2faModel(
-            SignInManager<User> signInManager,
-            UserManager<User> userManager,
+            SignInManager<PKUser> signInManager,
+            UserManager<PKUser> userManager,
             ILogger<LoginWith2faModel> logger)
         {
             _signInManager = signInManager;

@@ -36,7 +36,7 @@ namespace PestKontroll.Models
 
         //-- Navigation properties --//
         public virtual Ticket Ticket { get; set; }
-        public virtual User Recipient { get; set; }
-        public virtual User Sender { get; set; }
+        public virtual PKUser Recipient { get; set; }
+        public virtual PKUser Sender { get; set; }
     }
 }

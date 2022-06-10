@@ -21,6 +21,6 @@ namespace PestKontroll.Models
 
         //-- Navigation properties --//
         public virtual Ticket Ticket { get; set; }
-        public virtual User User { get; set; }
+        public virtual PKUser User { get; set; }
     }
 }

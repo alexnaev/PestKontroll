@@ -17,9 +17,9 @@ namespace PestKontroll.Areas.Identity.Pages.Account
 {
     public class ResetPasswordModel : PageModel
     {
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<PKUser> _userManager;
 
-        public ResetPasswordModel(UserManager<User> userManager)
+        public ResetPasswordModel(UserManager<PKUser> userManager)
         {
             _userManager = userManager;
         }

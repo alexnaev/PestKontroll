@@ -14,7 +14,7 @@ namespace PestKontroll.Models
 
 
         //-- Navigation properties --//
-        public virtual ICollection<User> Members { get; set; }
+        public virtual ICollection<PKUser> Members { get; set; }
         public virtual ICollection<Project> Projects { get; set; }
         public virtual ICollection<Invite> Invites { get; set; }
     }

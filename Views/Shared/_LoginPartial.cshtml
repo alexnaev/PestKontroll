@@ -1,11 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<User> SignInManager
-@inject UserManager<User> UserManager
+@inject SignInManager<PKUser> SignInManager
+@inject UserManager<PKUser> UserManager
 
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
-    User user = await UserManager.GetUserAsync(User);
+    PKUser user = await UserManager.GetUserAsync(User);
     <li class="nav-item">
         <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @user.FullName!</a>
     </li>

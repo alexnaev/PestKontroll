@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PestKontroll.Models
 {
-    public class User : IdentityUser
+    public class PKUser : IdentityUser
     {
         [Required]
         [Display(Name = "First Name")]

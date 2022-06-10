@@ -14,12 +14,12 @@ namespace PestKontroll.Areas.Identity.Pages.Account.Manage
 {
     public class SetPasswordModel : PageModel
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<PKUser> _userManager;
+        private readonly SignInManager<PKUser> _signInManager;
 
         public SetPasswordModel(
-            UserManager<User> userManager,
-            SignInManager<User> signInManager)
+            UserManager<PKUser> userManager,
+            SignInManager<PKUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
