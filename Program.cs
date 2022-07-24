@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using PestKontroll.Data;
 using PestKontroll.Models;
@@ -18,9 +19,20 @@ builder.Services.AddIdentity<PKUser, IdentityRole>(options => options.SignIn.Req
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultUI()
     .AddDefaultTokenProviders();
+
+//Custom Services
 builder.Services.AddScoped<IPKRoleService, PKRoleService>();
 builder.Services.AddScoped<IPKCompanyInfoService, PKCompanyInfoService>();
 builder.Services.AddScoped<IPKProjectService, PKProjectService>();
+builder.Services.AddScoped<IPKTicketService, PKTicketService>();
+builder.Services.AddScoped<IPKTicketHistoryService, PKTicketHistoryService>();
+builder.Services.AddScoped<IPKNotificationService, PKNotificationService>();
+builder.Services.AddScoped<IPKInviteService, PKInviteService>();
+builder.Services.AddScoped<IPKFileService, PKFileService>();
+
+builder.Services.AddScoped<IEmailSender, PKEmailService>();
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
