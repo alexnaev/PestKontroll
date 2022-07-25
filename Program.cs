@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PestKontroll.Data;
 using PestKontroll.Models;
 using PestKontroll.Services;
+using PestKontroll.Services.Factories;
 using PestKontroll.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentity<PKUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddClaimsPrincipalFactory<PKUserClaimsPrincipalFactory>()
     .AddDefaultUI()
     .AddDefaultTokenProviders();
 
