@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using PestKontroll.Data;
 using PestKontroll.Models;
 using PestKontroll.Services.Interfaces;
@@ -28,6 +29,22 @@ namespace PestKontroll.Services
             IdentityRole role = _context.Roles.Find(roleId);
             string result = await _roleManager.GetRoleNameAsync(role);
             return result;
+        }
+
+        public async Task<List<IdentityRole>> GetRolesAsync()
+        {
+            try
+            {
+                List<IdentityRole> result = new();
+                result = await _context.Roles.ToListAsync();
+
+                return result;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<IEnumerable<string>> GetUserRolesAsync(PKUser user)
