@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-PestKontroll-33F977C7-2BE8-4494-A4EE-877F2D266067</UserSecretsId>
   </PropertyGroup>

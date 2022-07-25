@@ -125,7 +125,7 @@ namespace PestKontroll.Areas.Identity.Pages.Account
 
                 var user = new PKUser
                 {
-                    FirsName = Input.FirsName,
+                    FirstName = Input.FirsName,
                     LastName = Input.LastName,
                     Email = Input.Email,
                     UserName = Input.Email

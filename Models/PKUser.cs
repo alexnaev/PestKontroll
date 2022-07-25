@@ -9,7 +9,7 @@ namespace PestKontroll.Models
     {
         [Required]
         [Display(Name = "First Name")]
-        public string FirsName { get; set; }
+        public string FirstName { get; set; }
 
         [Required]
         [Display(Name = "Last Name")]
@@ -17,18 +17,18 @@ namespace PestKontroll.Models
 
         [NotMapped]
         [Display(Name = "Full Name")]
-        public string FullName { get { return $"{FirsName} {LastName}"; } }
+        public string FullName { get { return $"{FirstName} {LastName}"; } }
 
         [NotMapped]
         [DataType(DataType.Upload)]
         public IFormFile AvatarFormFile { get; set; }
 
         [DisplayName("Avatar")]
-        public string AvatarFileName { get; set; }
-        public byte[] AvatarFileData { get; set; }
+        public string? AvatarFileName { get; set; }
+        public byte[]? AvatarFileData { get; set; }
 
         [Display(Name = "File Extension")]
-        public string AvatarContentData { get; set; }
+        public string? AvatarContentData { get; set; }
 
         public int? CompanyId { get; set; }
 
