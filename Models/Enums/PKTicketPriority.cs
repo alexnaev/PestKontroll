@@ -2,9 +2,9 @@
 {
     public enum PKTicketPriority
     {
-        Low,
-        Medium,
+        Urgent,
         High,
-        Urgent
+        Medium,
+        Low
     }
 }
