@@ -183,7 +183,7 @@ namespace PestKontroll.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProjectUser",
+                name: "PKUserProject",
                 columns: table => new
                 {
                     MembersId = table.Column<string>(type: "text", nullable: false),
@@ -191,15 +191,15 @@ namespace PestKontroll.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProjectUser", x => new { x.MembersId, x.Projectsid });
+                    table.PrimaryKey("PK_PKUserProject", x => new { x.MembersId, x.Projectsid });
                     table.ForeignKey(
-                        name: "FK_ProjectUser_AspNetUsers_MembersId",
+                        name: "FK_PKUserProject_AspNetUsers_MembersId",
                         column: x => x.MembersId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProjectUser_Projects_Projectsid",
+                        name: "FK_PKUserProject_Projects_Projectsid",
                         column: x => x.Projectsid,
                         principalTable: "Projects",
                         principalColumn: "id",
@@ -444,8 +444,8 @@ namespace PestKontroll.Data.Migrations
                 column: "ProjectPriorityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectUser_Projectsid",
-                table: "ProjectUser",
+                name: "IX_PKUserProject_Projectsid",
+                table: "PKUserProject",
                 column: "Projectsid");
 
             migrationBuilder.CreateIndex(
@@ -529,7 +529,7 @@ namespace PestKontroll.Data.Migrations
                 name: "Notifications");
 
             migrationBuilder.DropTable(
-                name: "ProjectUser");
+                name: "PKUserProject");
 
             migrationBuilder.DropTable(
                 name: "TicketAttachments");

@@ -29,6 +29,7 @@ builder.Services.AddScoped<IPKTicketHistoryService, PKTicketHistoryService>();
 builder.Services.AddScoped<IPKNotificationService, PKNotificationService>();
 builder.Services.AddScoped<IPKInviteService, PKInviteService>();
 builder.Services.AddScoped<IPKFileService, PKFileService>();
+builder.Services.AddScoped<IPKLookupService, PKLookupService>();
 
 builder.Services.AddScoped<IEmailSender, PKEmailService>();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
