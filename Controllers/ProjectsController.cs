@@ -18,13 +18,14 @@ namespace PestKontroll.Controllers
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<PKUser> _userManager;
         private readonly IPKRoleService _roleService;
         private readonly IPKLookupService _lookupService;
         private readonly IPKFileService _fileService;
         private readonly IPKProjectService _projectService;
-        private readonly UserManager<PKUser> _userManager;
+        private readonly IPKCompanyInfoService _companyInfoService;
 
-        public ProjectsController(ApplicationDbContext context, IPKRoleService roleService, IPKLookupService lookupService, IPKFileService fileService, IPKProjectService projectService, UserManager<PKUser> userManager)
+        public ProjectsController(ApplicationDbContext context, IPKRoleService roleService, IPKLookupService lookupService, IPKFileService fileService, IPKProjectService projectService, UserManager<PKUser> userManager, IPKCompanyInfoService companyInfoService)
         {
             _context = context;
             _roleService = roleService;
@@ -32,6 +33,7 @@ namespace PestKontroll.Controllers
             _fileService = fileService;
             _projectService = projectService;
             _userManager = userManager;
+            _companyInfoService = companyInfoService;
         }
 
         // GET: Projects
@@ -41,12 +43,30 @@ namespace PestKontroll.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Projects
+        // GET: All Projects
         public async Task<IActionResult> MyProjects()
         {
             string userId = _userManager.GetUserId(User);
 
             List<Project> projects = await _projectService.GetUserProjectsAsync(userId);
+
+            return View(projects);
+        }
+
+        public async Task<IActionResult> AllProjects()
+        {
+            List<Project> projects = new();
+
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            if (User.IsInRole(nameof(Roles.Admin)) || User.IsInRole(nameof(Roles.ProjectManager)))
+            {
+                projects = await _companyInfoService.GetAllProjectsAsync(companyId);
+            }
+            else
+            {
+                projects = await _projectService.GetAllProjectsByCompany(companyId);
+            }
 
             return View(projects);
         }
