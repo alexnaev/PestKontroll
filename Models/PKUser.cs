@@ -30,7 +30,7 @@ namespace PestKontroll.Models
         [Display(Name = "File Extension")]
         public string? AvatarContentData { get; set; }
 
-        public int? CompanyId { get; set; }
+        public int CompanyId { get; set; }
 
 
         //-- Navigation properties --//

@@ -88,9 +88,24 @@ namespace PestKontroll.Services
 
         public async Task ArchiveProjectAssync(Project project)
         {
-            project.Archived = true;
-            _context.Update(project);
-            await _context.SaveChangesAsync();
+            try
+            {
+                project.Archived = true;
+                await UpdateProjectAsync(project);
+
+                //Archive tickets in project
+                foreach (Ticket ticket in project.Tickets)
+                {
+                    ticket.ArchivedByProject = true;
+                    _context.Update(ticket);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<List<PKUser>> GetAllProjectMembersExeptPMAsync(int projectId)
@@ -337,6 +352,28 @@ namespace PestKontroll.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"**** ERROR **** - Could not remove users from project ---> {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task RestoreProjectAssync(Project project)
+        {
+            try
+            {
+                project.Archived = false;
+                await UpdateProjectAsync(project);
+
+                //Restore tickets in project
+                foreach (Ticket ticket in project.Tickets)
+                {
+                    ticket.ArchivedByProject = false;
+                    _context.Update(ticket);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception)
+            {
+
                 throw;
             }
         }
