@@ -71,6 +71,15 @@ namespace PestKontroll.Controllers
             return View(projects);
         }
 
+        public async Task<IActionResult> ArchivedProjects()
+        {
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            List<Project> projects = await _projectService.GetArchivedProjectsByCompany(companyId);
+
+            return View(projects);
+        }
+
         // GET: Projects/Details/5
         public async Task<IActionResult> Details(int? id)
         {
