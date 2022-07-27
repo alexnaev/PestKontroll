@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -21,14 +22,16 @@ namespace PestKontroll.Controllers
         private readonly IPKLookupService _lookupService;
         private readonly IPKFileService _fileService;
         private readonly IPKProjectService _projectService;
+        private readonly UserManager<PKUser> _userManager;
 
-        public ProjectsController(ApplicationDbContext context, IPKRoleService roleService, IPKLookupService lookupService, IPKFileService fileService, IPKProjectService projectService)
+        public ProjectsController(ApplicationDbContext context, IPKRoleService roleService, IPKLookupService lookupService, IPKFileService fileService, IPKProjectService projectService, UserManager<PKUser> userManager)
         {
             _context = context;
             _roleService = roleService;
             _lookupService = lookupService;
             _fileService = fileService;
             _projectService = projectService;
+            _userManager = userManager;
         }
 
         // GET: Projects
@@ -36,6 +39,16 @@ namespace PestKontroll.Controllers
         {
             var applicationDbContext = _context.Projects.Include(p => p.Company).Include(p => p.ProjectPriority);
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        // GET: Projects
+        public async Task<IActionResult> MyProjects()
+        {
+            string userId = _userManager.GetUserId(User);
+
+            List<Project> projects = await _projectService.GetUserProjectsAsync(userId);
+
+            return View(projects);
         }
 
         // GET: Projects/Details/5
