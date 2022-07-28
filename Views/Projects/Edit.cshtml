@@ -79,18 +79,6 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-<script>
-    var pm = "@Model.SelectedProjectManager";
-    const PmSelect = document.querySelector("#PmId");
-
-for (let i = 0; PmSelect.options.length >= i; i++) {
-        if (PmSelect.options[i].value == pm) {
-            PmSelect.selectedIndex = i;
-            break;
-        }
-    }
-</script>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

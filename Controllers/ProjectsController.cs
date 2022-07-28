@@ -169,10 +169,8 @@ namespace PestKontroll.Controllers
 
             model.Project = await _projectService.GetProjectByIdAsync(id.Value, companyId);
 
-            model.SelectedProjectManager = (await _projectService.GetProjectManagerAsync(id.Value))?.Id;
-
             //Load selectlists with data
-            model.PMList = new SelectList(await _roleService.GetUsersInRoleAsync(Roles.ProjectManager.ToString(), companyId), "Id", "FullName");
+            model.PMList = new SelectList(await _roleService.GetUsersInRoleAsync(Roles.ProjectManager.ToString(), companyId), "Id", "FullName", (await _projectService.GetProjectManagerAsync(id.Value))?.Id);
             model.PriorityList = new SelectList(await _lookupService.GetProjectPrioritiesAsync(), "Id", "Name");
 
             return View(model);

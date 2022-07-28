@@ -192,12 +192,6 @@ namespace PestKontroll.Services
 
         public async Task<Project> GetProjectByIdAsync(int projectId, int companyId)
         {
-            //Project project = await _context.Projects
-            //                                .Include(p => p.Tickets)
-            //                                .Include(p => p.Members)
-            //                                .Include(p => p.ProjectPriority)
-            //                                .FirstOrDefaultAsync(p => p.id == projectId && p.CompanyId == companyId);
-
             Project project = await _context.Projects
                                             .Include(p => p.Tickets)
                                                 .ThenInclude(t => t.TicketPriority)

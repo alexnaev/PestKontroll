@@ -1,22 +1,35 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PestKontroll.Data;
+using PestKontroll.Extensions;
 using PestKontroll.Models;
+using PestKontroll.Models.Enums;
+using PestKontroll.Services.Interfaces;
 
 namespace PestKontroll.Controllers
 {
     public class TicketsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<PKUser> _userManager;
+        private readonly IPKProjectService _projectService;
+        private readonly IPKLookupService _lookupService;
+        private readonly IPKTicketService _ticketService;
 
-        public TicketsController(ApplicationDbContext context)
+        public TicketsController(ApplicationDbContext context, UserManager<PKUser> userManager, IPKProjectService projectService, IPKLookupService lookupService, IPKTicketService ticketService)
         {
             _context = context;
+            _userManager = userManager;
+            _projectService = projectService;
+            _lookupService = lookupService;
+            _ticketService = ticketService;
         }
 
         // GET: Tickets
@@ -51,14 +64,23 @@ namespace PestKontroll.Controllers
         }
 
         // GET: Tickets/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["OwnerUserId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "id", "Name");
-            ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Id");
-            ViewData["TicketStatusId"] = new SelectList(_context.TicketStatuses, "Id", "Id");
-            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "Id");
+            PKUser pkUser = await _userManager.GetUserAsync(User);
+
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            if (User.IsInRole(nameof(Roles.Admin)))
+            {
+                ViewData["ProjectId"] = new SelectList(await _projectService.GetAllProjectsByCompany(companyId), "id", "Name");
+            }
+            else
+            {
+                ViewData["ProjectId"] = new SelectList(await _projectService.GetUserProjectsAsync(pkUser.Id), "id", "Name");
+            }
+
+            ViewData["TicketPriorityId"] = new SelectList(await _lookupService.GetTicketPrioritiesAsync(), "Id", "Name");
+            ViewData["TicketTypeId"] = new SelectList(await _lookupService.GetTicketTypesAsync(), "Id", "Name");
             return View();
         }
 
@@ -67,20 +89,36 @@ namespace PestKontroll.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Created,Updated,Archived,ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId,OwnerUserId,DeveloperUserId")] Ticket ticket)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,ProjectId,TicketTypeId,TicketPriorityId,")] Ticket ticket)
         {
+            PKUser pkUser = await _userManager.GetUserAsync(User);
+
             if (ModelState.IsValid)
             {
-                _context.Add(ticket);
-                await _context.SaveChangesAsync();
+                ticket.Created = DateTimeOffset.Now;
+                ticket.OwnerUserId = pkUser.Id;
+
+                ticket.TicketStatusId = (await _ticketService.LookupTicketStatusIdAsync(nameof(PKTicketStatus.New))).Value;
+
+                await _ticketService.AddNewTicketAsync(ticket);
+
+                //TODO: Ticket History
+
+                //TODO Ticket Notification
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "Id", ticket.DeveloperUserId);
-            ViewData["OwnerUserId"] = new SelectList(_context.Users, "Id", "Id", ticket.OwnerUserId);
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "id", "Name", ticket.ProjectId);
-            ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Id", ticket.TicketPriorityId);
-            ViewData["TicketStatusId"] = new SelectList(_context.TicketStatuses, "Id", "Id", ticket.TicketStatusId);
-            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "Id", ticket.TicketTypeId);
+            if (User.IsInRole(nameof(Roles.Admin)))
+            {
+                ViewData["ProjectId"] = new SelectList(await _projectService.GetAllProjectsByCompany(pkUser.CompanyId), "id", "Name");
+            }
+            else
+            {
+                ViewData["ProjectId"] = new SelectList(await _projectService.GetUserProjectsAsync(pkUser.Id), "id", "Name");
+            }
+
+            ViewData["TicketPriorityId"] = new SelectList(await _lookupService.GetTicketPrioritiesAsync(), "Id", "Name");
+            ViewData["TicketTypeId"] = new SelectList(await _lookupService.GetTicketTypesAsync(), "Id", "Name");
             return View(ticket);
         }
 

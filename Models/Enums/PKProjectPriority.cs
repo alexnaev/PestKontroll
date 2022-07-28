@@ -2,9 +2,9 @@
 {
     public enum PKProjectPriority
     {
-        Urgent,
-        High,
+        Low,
         Medium,
-        Low
+        High,
+        Urgent
     }
 }
