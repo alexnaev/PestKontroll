@@ -7,7 +7,7 @@ namespace PestKontroll.Services.Interfaces
         public Task AddNewProjectAsync(Project project);
         public Task<bool> AddProjectManagerAsync(string userId, int  projectId);
         public Task<bool> AddUserToProjectAsync(string userId, int projectId);
-        public Task ArchiveProjectAssync(Project project);
+        public Task ArchiveProjectAsync(Project project);
         public Task<List<Project>> GetAllProjectsByCompany(int companyId);
         public Task<List<Project>> GetAllProjectsByPriority(int companyId, string priorityName);
         public Task<List<PKUser>> GetAllProjectMembersExeptPMAsync(int projectId);
@@ -19,6 +19,7 @@ namespace PestKontroll.Services.Interfaces
         public Task<List<PKUser>> GetSubmittersOnProjectAsync(int projectId);
         public Task<List<PKUser>> GetUsersNotOnProjectAsync(int projectId, int companyId);
         public Task<List<Project>> GetUserProjectsAsync(string userId);
+        public Task<bool> IsAssignedProjectManagerAsync(string userId, int projectId);
         public Task<bool> IsUserOnProjectAsync(string userId, int projectId);
         public Task<int> LookupProjectPriorityId(string priorityName);
         public Task RemoveProjectManagerAsync(int projectId);

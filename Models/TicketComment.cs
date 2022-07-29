@@ -13,7 +13,7 @@ namespace PestKontroll.Models
         public DateTimeOffset Created { get; set; }
 
         [DisplayName("Ticket")]
-        public int TicktId { get; set; }
+        public int TicketId { get; set; }
 
         [DisplayName("Team Member")]
         public string UserId { get; set; }

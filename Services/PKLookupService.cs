@@ -42,7 +42,15 @@ namespace PestKontroll.Services
 
         public async Task<List<TicketStatus>> GetTicketStatusesAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _context.TicketStatuses.ToListAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<List<TicketType>> GetTicketTypesAsync()

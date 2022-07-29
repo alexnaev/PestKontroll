@@ -1,10 +1,17 @@
 ﻿@model IEnumerable<PestKontroll.Models.Ticket>
+@using Microsoft.AspNetCore.Identity
+@using PestKontroll.Services.Interfaces
+@using PestKontroll.Models.Enums
+
+@inject UserManager<PKUser> UserManager
+@inject IPKProjectService ProjectService
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "All Tickets";
+    PKUser pkUser = await UserManager.GetUserAsync(User);
 }
 
-<h1>Index</h1>
+<h1>All Tickets</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -79,15 +86,23 @@
                 @Html.DisplayFor(modelItem => item.TicketStatus.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.OwnerUser.Id)
+                @Html.DisplayFor(modelItem => item.OwnerUser.FullName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DeveloperUser.Id)
+                @Html.DisplayFor(modelItem => item.DeveloperUser.FullName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    @if (!item.Archived)
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                @if (User.IsInRole(nameof(Roles.Admin)) || item.DeveloperUserId == pkUser.Id || item.OwnerUserId == pkUser.Id || await ProjectService.IsAssignedProjectManagerAsync(pkUser.Id, item.ProjectId))
+                {
+                    <span>|</span>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>                    
+                }
+
+                @if (User.IsInRole(nameof(Roles.Admin)) || await ProjectService.IsAssignedProjectManagerAsync(pkUser.Id, item.ProjectId))
+                {
+                    <span>|</span>
+                    if (!item.Archived)
                     {
                         <a asp-action="Archive" asp-route-id="@item.Id">Archive</a>
                     }
@@ -95,6 +110,7 @@
                     {
                         <a asp-action="Restore" asp-route-id="@item.Id">Restore</a>
                     }
+                }
                 </td>
         </tr>
 }

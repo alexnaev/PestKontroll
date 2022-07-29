@@ -86,7 +86,7 @@ namespace PestKontroll.Services
             }
         }
 
-        public async Task ArchiveProjectAssync(Project project)
+        public async Task ArchiveProjectAsync(Project project)
         {
             try
             {
@@ -289,6 +289,28 @@ namespace PestKontroll.Services
             List<PKUser> users = await _context.Users.Where(u => u.Projects.All(p => p.id != projectId)).ToListAsync();
 
             return users.Where(u => u.CompanyId == companyId).ToList();
+        }
+
+        public async Task<bool> IsAssignedProjectManagerAsync(string userId, int projectId)
+        {
+            try
+            {
+                string projectManagerId = (await GetProjectManagerAsync(projectId))?.Id;
+
+                if (projectManagerId == userId)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<bool> IsUserOnProjectAsync(string userId, int projectId)

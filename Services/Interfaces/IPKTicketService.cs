@@ -8,6 +8,8 @@ namespace PestKontroll.Services.Interfaces
         public Task UpdateTicketAsync(Ticket ticket);
         public Task<Ticket> GetTicketByIdAsync(int ticketId);
         public Task ArchiveTicketAsync(Ticket ticket);
+        public Task AddTicketCommentAsync(TicketComment ticketComment);
+        public Task AddTicketAttachmentAsync(TicketAttachment ticketAttachment);
         public Task AssignTicketAsync(int ticketId, string userId);
 
         public Task<List<Ticket>> GetArchivedTicketsAsync(int companyId);
@@ -15,7 +17,7 @@ namespace PestKontroll.Services.Interfaces
         public Task<List<Ticket>> GetAllTicketsByPriorityAsync(int companyId, string priorityName);
         public Task<List<Ticket>> GetAllTicketsByStatusAsync(int companyId, string statusName);
         public Task<List<Ticket>> GetAllTicketsByTypeAsync(int companyId, string typeName);
-        
+        public Task<TicketAttachment> GetTicketAttachmentByIdAsync(int ticketAttachmentId);
         public Task<PKUser> GetTicketDeveloperAsync(int ticketId, int companyId);
         
         public Task<List<Ticket>> GetTicketsByRoleAsync(string role, string userId, int companyId);
@@ -28,5 +30,6 @@ namespace PestKontroll.Services.Interfaces
         public Task<int?> LookupTicketPriorityIdAsync(string priorityName);
         public Task<int?> LookupTicketStatusIdAsync(string statusName);
         public Task<int?> LookupTicketTypeIdAsync(string typeName);
+        public Task RestoreTicketAsync(Ticket ticket);
     }
 }

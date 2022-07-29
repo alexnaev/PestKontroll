@@ -43,7 +43,7 @@ namespace PestKontroll.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: All Projects
+        // GET: MyProjects
         public async Task<IActionResult> MyProjects()
         {
             string userId = _userManager.GetUserId(User);
@@ -53,6 +53,7 @@ namespace PestKontroll.Controllers
             return View(projects);
         }
 
+        // GET: All Projects
         public async Task<IActionResult> AllProjects()
         {
             List<Project> projects = new();
@@ -246,7 +247,7 @@ namespace PestKontroll.Controllers
 
             var project = await _projectService.GetProjectByIdAsync(id, companyId);
 
-            await _projectService.ArchiveProjectAssync(project);
+            await _projectService.ArchiveProjectAsync(project);
             
             return RedirectToAction(nameof(Index));
         }
