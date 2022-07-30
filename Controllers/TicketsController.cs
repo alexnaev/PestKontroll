@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +12,7 @@ using PestKontroll.Data;
 using PestKontroll.Extensions;
 using PestKontroll.Models;
 using PestKontroll.Models.Enums;
+using PestKontroll.Models.ViewModels;
 using PestKontroll.Services.Interfaces;
 
 namespace PestKontroll.Controllers
@@ -76,6 +78,60 @@ namespace PestKontroll.Controllers
             List<Ticket> tickets = await _ticketService.GetArchivedTicketsAsync(companyId);
 
             return View(tickets);
+        }
+
+        //GET: UnassignedTickets
+        [Authorize(Roles="Admin,ProjectManager")]
+        public async Task<IActionResult> UnassignedTickets()
+        {
+            int companyId = User.Identity.GetCompanyId().Value;
+            string pkUserId = _userManager.GetUserId(User);
+
+            List<Ticket> tickets = await _ticketService.GetUnassignedTicketsAsync(companyId);
+
+            if (User.IsInRole(nameof(Roles.Admin)))
+            {
+                return View(tickets);
+            }
+            else
+            {
+                List<Ticket> pmTickets = new();
+
+                foreach (Ticket ticket in tickets)
+                {
+                    if (await _projectService.IsAssignedProjectManagerAsync(pkUserId, ticket.ProjectId))
+                    {
+                        pmTickets.Add(ticket);
+                    }
+                }
+
+                return View(pmTickets);
+            }
+        }
+
+        //GET: AssignDeveloper
+        [HttpGet]
+        public async Task<IActionResult> AssignDeveloper(int id)
+        {
+            AssignDeveloperViewModel model = new();
+
+            model.Ticket = await _ticketService.GetTicketByIdAsync(id);
+            model.Developers = new SelectList(await _projectService.GetProjectsMembersByRoleAsync(model.Ticket.ProjectId, nameof(Roles.Developer)), "Id", "FullName");
+
+            return View(model);
+        }
+
+        //POST: AssignDeveloper
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignDeveloper(AssignDeveloperViewModel model)
+        {
+            if (model.DeveloperId != null)
+            {
+                await _ticketService.AssignTicketAsync(model.Ticket.Id, model.DeveloperId);
+            }
+
+            return RedirectToAction(nameof(AssignDeveloper), new { id = model.Ticket.Id});
         }
 
         // GET: Tickets/Details/5
