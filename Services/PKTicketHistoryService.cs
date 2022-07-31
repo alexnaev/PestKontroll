@@ -83,7 +83,7 @@ namespace PestKontroll.Services
                     TicketHistory history = new()
                     {
                         TicketId = newTicket.Id,
-                        Property = "TicketPriority",
+                        Property = "Ticket Priority",
                         OldValue = oldTicket.TicketPriority.Name,
                         NewValue = newTicket.TicketPriority.Name,
                         Created = DateTimeOffset.Now,
@@ -100,7 +100,7 @@ namespace PestKontroll.Services
                     TicketHistory history = new()
                     {
                         TicketId = newTicket.Id,
-                        Property = "TicketStatus",
+                        Property = "Ticket Status",
                         OldValue = oldTicket.TicketStatus.Name,
                         NewValue = newTicket.TicketStatus.Name,
                         Created = DateTimeOffset.Now,
@@ -117,7 +117,7 @@ namespace PestKontroll.Services
                     TicketHistory history = new()
                     {
                         TicketId = newTicket.Id,
-                        Property = "TicketTypeId",
+                        Property = "Ticket Type",
                         OldValue = oldTicket.TicketType.Name,
                         NewValue = newTicket.TicketType.Name,
                         Created = DateTimeOffset.Now,
@@ -154,6 +154,35 @@ namespace PestKontroll.Services
 
                     throw;
                 }
+            }
+        }
+
+        public async Task AddHistoryAsync(int ticketId, string model, string userId)
+        {
+            try
+            {
+                Ticket ticket = await _context.Tickets.FindAsync(ticketId);
+                string description = model.ToLower().Replace("ticket", "");
+                description = $"New {description} added to ticket";
+
+                TicketHistory history = new()
+                {
+                    TicketId = ticketId,
+                    Property = model,
+                    OldValue = "",
+                    NewValue = "",
+                    Created = DateTimeOffset.Now,
+                    UserId = userId,
+                    Description = description
+                };
+
+                await _context.TicketHistories.AddAsync(history);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
 

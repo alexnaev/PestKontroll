@@ -288,6 +288,25 @@ namespace PestKontroll.Services
             }
         }
 
+        public async Task<Ticket> GetTicketAsNoTracking(int ticketId)
+        {
+            try
+            {
+                return await _context.Tickets
+                                     .Include(t => t.DeveloperUser)
+                                     .Include(t => t.Project)
+                                     .Include(t => t.TicketPriority)
+                                     .Include(t => t.TicketStatus)
+                                     .Include(t => t.TicketType)
+                                     .AsNoTracking()
+                                     .FirstOrDefaultAsync(t => t.Id == ticketId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<TicketAttachment> GetTicketAttachmentByIdAsync(int ticketAttachmentId)
         {
             try
@@ -317,7 +336,7 @@ namespace PestKontroll.Services
                                      .Include(t => t.TicketType)
                                      .Include(t => t.Comments)
                                      .Include(t => t.Attachments)
-                                     .Include(t => t.History)
+                                     .Include(t => t.History.OrderByDescending(h => h.Id))
                                      .FirstOrDefaultAsync(t => t.Id == ticketId);
             }
             catch (Exception)

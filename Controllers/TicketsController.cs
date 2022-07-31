@@ -25,8 +25,9 @@ namespace PestKontroll.Controllers
         private readonly IPKLookupService _lookupService;
         private readonly IPKTicketService _ticketService;
         private readonly IPKFileService _fileService;
+        private readonly IPKTicketHistoryService _historyService;
 
-        public TicketsController(ApplicationDbContext context, UserManager<PKUser> userManager, IPKProjectService projectService, IPKLookupService lookupService, IPKTicketService ticketService, IPKFileService fileService)
+        public TicketsController(ApplicationDbContext context, UserManager<PKUser> userManager, IPKProjectService projectService, IPKLookupService lookupService, IPKTicketService ticketService, IPKFileService fileService, IPKTicketHistoryService ticketHistoryService)
         {
             _context = context;
             _userManager = userManager;
@@ -34,6 +35,7 @@ namespace PestKontroll.Controllers
             _lookupService = lookupService;
             _ticketService = ticketService;
             _fileService = fileService;
+            _historyService = ticketHistoryService;
         }
 
         // GET: Tickets
@@ -128,7 +130,24 @@ namespace PestKontroll.Controllers
         {
             if (model.DeveloperId != null)
             {
-                await _ticketService.AssignTicketAsync(model.Ticket.Id, model.DeveloperId);
+                PKUser pkUser = await _userManager.GetUserAsync(User);
+
+                //Add History
+                Ticket oldTicket = await _ticketService.GetTicketAsNoTracking(model.Ticket.Id);
+
+                try
+                {
+                    await _ticketService.AssignTicketAsync(model.Ticket.Id, model.DeveloperId);
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+
+                //Add History
+                Ticket newTicket = await _ticketService.GetTicketAsNoTracking(model.Ticket.Id);
+                await _historyService.AddHistoryAsync(oldTicket, newTicket, pkUser.Id);
             }
 
             return RedirectToAction(nameof(AssignDeveloper), new { id = model.Ticket.Id});
@@ -184,18 +203,28 @@ namespace PestKontroll.Controllers
 
             if (ModelState.IsValid)
             {
-                ticket.Created = DateTimeOffset.Now;
-                ticket.OwnerUserId = pkUser.Id;
+                try
+                {
+                    ticket.Created = DateTimeOffset.Now;
+                    ticket.OwnerUserId = pkUser.Id;
 
-                ticket.TicketStatusId = (await _ticketService.LookupTicketStatusIdAsync(nameof(PKTicketStatus.New))).Value;
+                    ticket.TicketStatusId = (await _ticketService.LookupTicketStatusIdAsync(nameof(PKTicketStatus.New))).Value;
 
-                await _ticketService.AddNewTicketAsync(ticket);
+                    await _ticketService.AddNewTicketAsync(ticket);
 
-                //TODO: Ticket History
+                    //Ticket History
+                    Ticket newTicket = await _ticketService.GetTicketAsNoTracking(ticket.Id);
+                    await _historyService.AddHistoryAsync(null, newTicket, pkUser.Id);
 
-                //TODO Ticket Notification
+                    //TODO Ticket Notification
+                }
+                catch (Exception)
+                {
 
-                return RedirectToAction(nameof(Index));
+                    throw;
+                }
+
+                return RedirectToAction(nameof(AllTickets));
             }
             if (User.IsInRole(nameof(Roles.Admin)))
             {
@@ -246,8 +275,11 @@ namespace PestKontroll.Controllers
 
             if (ModelState.IsValid)
             {
+                //Add History
                 PKUser pKUser = await _userManager.GetUserAsync(User);
+                Ticket oldTicket = await _ticketService.GetTicketAsNoTracking(ticket.Id);
 
+                //Update Ticket
                 try
                 {
                     ticket.Updated = DateTimeOffset.Now;
@@ -265,7 +297,10 @@ namespace PestKontroll.Controllers
                     }
                 }
 
-                //TODO: Add History
+                //Add History
+                Ticket newTicket = await _ticketService.GetTicketAsNoTracking(ticket.Id);
+                await _historyService.AddHistoryAsync(oldTicket, newTicket, pKUser.Id);
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -288,6 +323,9 @@ namespace PestKontroll.Controllers
                     ticketComment.Created = DateTimeOffset.Now;
 
                     await _ticketService.AddTicketCommentAsync(ticketComment);
+
+                    //Add History
+                    await _historyService.AddHistoryAsync(ticketComment.TicketId, nameof(TicketComment), ticketComment.UserId);
                 }
                 catch (Exception)
                 {
@@ -305,17 +343,31 @@ namespace PestKontroll.Controllers
         public async Task<IActionResult> AddTicketAttachment([Bind("Id,FormFile,Description,TicketId")] TicketAttachment ticketAttachment)
         {
             string statusMessage;
+            PKUser pkUser = await _userManager.GetUserAsync(User);
 
             if (ModelState.IsValid && ticketAttachment.FormFile != null)
             {
-                ticketAttachment.FileData = await _fileService.ConvertFileToByteArrayAsync(ticketAttachment.FormFile);
-                ticketAttachment.FileName = ticketAttachment.FormFile.FileName;
-                ticketAttachment.FileContentType = ticketAttachment.FormFile.ContentType;
+                try
+                {
+                    ticketAttachment.FileData = await _fileService.ConvertFileToByteArrayAsync(ticketAttachment.FormFile);
+                    ticketAttachment.FileName = ticketAttachment.FormFile.FileName;
+                    ticketAttachment.FileContentType = ticketAttachment.FormFile.ContentType;
 
-                ticketAttachment.Created = DateTimeOffset.Now;
-                ticketAttachment.UserId = _userManager.GetUserId(User);
+                    ticketAttachment.Created = DateTimeOffset.Now;
+                    ticketAttachment.UserId = _userManager.GetUserId(User);
 
-                await _ticketService.AddTicketAttachmentAsync(ticketAttachment);
+                    await _ticketService.AddTicketAttachmentAsync(ticketAttachment);
+
+                    //Add History
+                    await _historyService.AddHistoryAsync(ticketAttachment.TicketId, nameof(TicketAttachment), ticketAttachment.UserId);
+
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+
                 statusMessage = "Success: New attachment added to ticket.";
             }
             else

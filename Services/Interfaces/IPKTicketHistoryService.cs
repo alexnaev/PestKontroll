@@ -5,6 +5,7 @@ namespace PestKontroll.Services.Interfaces
     public interface IPKTicketHistoryService
     {
         Task AddHistoryAsync(Ticket oldTisket, Ticket newTicket, string userId);
+        Task AddHistoryAsync(int ticketId, string model, string userId);
         Task<List<TicketHistory>> GetProjectTicketsHistoriesAsync(int projectId, int companyId);
         Task<List<TicketHistory>> GetCompanyTicketsHistoriesAsync(int companyId);
     }

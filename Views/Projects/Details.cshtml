@@ -158,24 +158,37 @@
                         </div>
                         <div class="body" style="overflow-y:auto;height:300px;background-color:antiquewhite">
                             @* Project Activity loop *@
-                            @foreach (TicketHistory history in await HistoryService.GetProjectTicketsHistoriesAsync(Model.id, pkUser.CompanyId))
+                            @{
+                                List<TicketHistory> histories = (await HistoryService.GetProjectTicketsHistoriesAsync(Model.id, pkUser.CompanyId)).OrderByDescending(h => h.Created).ToList();
+                            }
+
+                            @foreach (TicketHistory history in histories)
                             {
                                 <div class="">
                                     <span class="date">@history.Created.ToString("dd MMM yyyy")</span>
-                                    <h6>@history.Description</h6>
+                                    <h6>
+                                        @history.Description<br />
+                                        <span><a asp-action="Details" asp-controller="Tickets" asp-route-id="@history.TicketId">@history.Ticket.Title</a></span>
+                                    </h6>
                                     <span>By: <a href="" title="@history.User.FullName">@history.User.FullName</a></span>
                                     <div class="">
-                                        <p>The ticket <b>@history.Property</b> was edited</p>
-                                        <p>@($"Previous {history.Property}: {history.OldValue}")</p>
-                                        <p>@($"Current {history.Property}: {history.NewValue}")</p>
-
-                                        <div class="media">
-                                            <div class="media-body">
-                                                <h6 class="mb-0"></h6>
-                                            </div>
-                                        </div>
+                                        @if (history.Description.Contains("New Ticket Created"))
+										{
+											<p>A ticket was added</p>
+										}
+										else if(history.Property.Equals("TicketComment") || history.Property.Equals("TicketAttachment"))
+										{
+											<p>A <b>@history.Property</b> was added</p>
+										}
+										else
+										{
+											<p><b>@history.Property</b> was edited</p>
+											<p>@($"Previous {history.Property}: ")<span style="color:red">@history.OldValue</span></p>
+											<p>@($"Current {history.Property}: ")<span style="color:green">@history.NewValue</span></p>
+										}
                                     </div>
                                 </div>
+                                <hr />
                             }
                         </div>
 
