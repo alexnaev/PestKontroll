@@ -17,6 +17,7 @@ namespace PestKontroll.Services.Interfaces
         public Task<List<PKUser>> GetProjectsMembersByRoleAsync(int projectId, string role);
         public Task<Project> GetProjectByIdAsync(int projectId, int companyId);
         public Task<List<PKUser>> GetSubmittersOnProjectAsync(int projectId);
+        public Task<List<Project>> GetUnassignedProjectsAsync(int companyId);
         public Task<List<PKUser>> GetUsersNotOnProjectAsync(int projectId, int companyId);
         public Task<List<Project>> GetUserProjectsAsync(string userId);
         public Task<bool> IsAssignedProjectManagerAsync(string userId, int projectId);

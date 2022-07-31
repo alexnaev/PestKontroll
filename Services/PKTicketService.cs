@@ -84,7 +84,7 @@ namespace PestKontroll.Services
                     try
                     {
                         ticket.DeveloperUserId = userId;
-                        ticket.TicketStatusId = (await LookupTicketStatusIdAsync("Devleopment")).Value;
+                        ticket.TicketStatusId = (await LookupTicketStatusIdAsync("Development")).Value;
 
                         await _context.SaveChangesAsync();
                     }
