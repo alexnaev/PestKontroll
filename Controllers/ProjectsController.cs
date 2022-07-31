@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,9 +16,9 @@ using PestKontroll.Services.Interfaces;
 
 namespace PestKontroll.Controllers
 {
+    [Authorize]
     public class ProjectsController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly UserManager<PKUser> _userManager;
         private readonly IPKRoleService _roleService;
         private readonly IPKLookupService _lookupService;
@@ -25,9 +26,8 @@ namespace PestKontroll.Controllers
         private readonly IPKProjectService _projectService;
         private readonly IPKCompanyInfoService _companyInfoService;
 
-        public ProjectsController(ApplicationDbContext context, IPKRoleService roleService, IPKLookupService lookupService, IPKFileService fileService, IPKProjectService projectService, UserManager<PKUser> userManager, IPKCompanyInfoService companyInfoService)
+        public ProjectsController(IPKRoleService roleService, IPKLookupService lookupService, IPKFileService fileService, IPKProjectService projectService, UserManager<PKUser> userManager, IPKCompanyInfoService companyInfoService)
         {
-            _context = context;
             _roleService = roleService;
             _lookupService = lookupService;
             _fileService = fileService;
@@ -36,14 +36,6 @@ namespace PestKontroll.Controllers
             _companyInfoService = companyInfoService;
         }
 
-        // GET: Projects
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.Projects.Include(p => p.Company).Include(p => p.ProjectPriority);
-            return View(await applicationDbContext.ToListAsync());
-        }
-
-        [HttpGet]
         public async Task<IActionResult> MyProjects()
         {
             string userId = _userManager.GetUserId(User);
@@ -53,7 +45,6 @@ namespace PestKontroll.Controllers
             return View(projects);
         }
 
-        [HttpGet]
         public async Task<IActionResult> AllProjects()
         {
             List<Project> projects = new();
@@ -66,13 +57,12 @@ namespace PestKontroll.Controllers
             }
             else
             {
-                projects = await _projectService.GetAllProjectsByCompany(companyId);
+                projects = await _projectService.GetAllProjectsByCompanyAsync(companyId);
             }
 
             return View(projects);
         }
 
-        [HttpGet]
         public async Task<IActionResult> ArchivedProjects()
         {
             int companyId = User.Identity.GetCompanyId().Value;
@@ -82,7 +72,7 @@ namespace PestKontroll.Controllers
             return View(projects);
         }
 
-        [HttpGet]
+        [Authorize(Roles="Admin")]
         public async Task<IActionResult> UnassignedProjects()
         {
             int companyId = User.Identity.GetCompanyId().Value;
@@ -94,6 +84,7 @@ namespace PestKontroll.Controllers
             return View(projects);
         }
 
+        [Authorize(Roles="Admin")]
         [HttpGet]
         public async Task<IActionResult> AssignPM(int projectId)
         {
@@ -107,6 +98,7 @@ namespace PestKontroll.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AssignPM(AssignPMViewModel model)
@@ -121,6 +113,7 @@ namespace PestKontroll.Controllers
             return RedirectToAction(nameof(AssignPM), new { projectId = model.Project.id});
         }
 
+        [Authorize(Roles = "Admin, ProjectManager")]
         [HttpGet]
         public async Task<IActionResult> AssignMembers(int id)
         {
@@ -140,6 +133,7 @@ namespace PestKontroll.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin, ProjectManager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AssignMembers(ProjectMembersViewModel model)
@@ -160,13 +154,12 @@ namespace PestKontroll.Controllers
                     await _projectService.AddUserToProjectAsync(member, model.Project.id);
                 }
 
-                return RedirectToAction("Details", "Projects", new { id = model.Project.id });
+                return RedirectToAction(nameof(Details), "Projects", new { id = model.Project.id });
             }
 
             return RedirectToAction(nameof(AssignMembers), new { id = model.Project.id});
         }
 
-        // GET: Projects/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -186,7 +179,8 @@ namespace PestKontroll.Controllers
             return View(project);
         }
 
-        // GET: Projects/Create
+        [Authorize(Roles = "Admin, ProjectManager")]
+        [HttpGet]
         public async Task<IActionResult> Create()
         {
             int companyId = User.Identity.GetCompanyId().Value;
@@ -200,9 +194,7 @@ namespace PestKontroll.Controllers
             return View(model);
         }
 
-        // POST: Projects/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin, ProjectManager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AddProjectWithPMViewModel model)
@@ -239,13 +231,14 @@ namespace PestKontroll.Controllers
                 }
 
                 //TODO: Redirect to All Projects
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(AllProjects));
             }
 
-            return RedirectToAction("Create");
+            return RedirectToAction(nameof(Create));
         }
 
-        // GET: Projects/Edit/5
+        [Authorize(Roles = "Admin, ProjectManager")]
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             int companyId = User.Identity.GetCompanyId().Value;
@@ -261,9 +254,7 @@ namespace PestKontroll.Controllers
             return View(model);
         }
 
-        // POST: Projects/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin, ProjectManager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(AddProjectWithPMViewModel model)
@@ -289,20 +280,27 @@ namespace PestKontroll.Controllers
                         await _projectService.AddProjectManagerAsync(model.PmId, model.Project.id);
                     }
                 }
-                catch (Exception)
+                catch (DbUpdateConcurrencyException)
                 {
-
-                    throw;
+                    if (!await ProjectExists(model.Project.id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
 
                 //TODO: Redirect to All Projects
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Details), new { id = model.Project.id});
             }
 
-            return RedirectToAction("Edit");
+            return RedirectToAction(nameof(Edit));
         }
 
-        // GET: Projects/Archive/5
+        [Authorize(Roles = "Admin, ProjectManager")]
+        [HttpGet]
         public async Task<IActionResult> Archive(int? id)
         {
             if (id == null)
@@ -322,7 +320,7 @@ namespace PestKontroll.Controllers
             return View(project);
         }
 
-        // POST: Projects/Archive/5
+        [Authorize(Roles = "Admin, ProjectManager")]
         [HttpPost, ActionName("Archive")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ArchiveConfirmed(int id)
@@ -333,10 +331,11 @@ namespace PestKontroll.Controllers
 
             await _projectService.ArchiveProjectAsync(project);
             
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(AllProjects));
         }
 
-        // GET: Projects/Restore/5
+        [Authorize(Roles = "Admin, ProjectManager")]
+        [HttpGet]
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null)
@@ -356,7 +355,7 @@ namespace PestKontroll.Controllers
             return View(project);
         }
 
-        // POST: Projects/Restore/5
+        [Authorize(Roles = "Admin, ProjectManager")]
         [HttpPost, ActionName("Restore")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RestoreConfirmed(int id)
@@ -367,13 +366,15 @@ namespace PestKontroll.Controllers
 
             await _projectService.RestoreProjectAssync(project);
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(AllProjects));
         }
 
 
-        private bool ProjectExists(int id)
+        private async Task<bool> ProjectExists(int id)
         {
-            return _context.Projects.Any(e => e.id == id);
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            return (await _projectService.GetAllProjectsByCompanyAsync(companyId)).Any(p => p.id == id);
         }
     }
 }

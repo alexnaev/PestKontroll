@@ -8,13 +8,11 @@
 @inject IPKTicketHistoryService HistoryService
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Project Details";
 
     PKUser pkUser = await UserManager.GetUserAsync(User);
     PKUser projectManager = await ProjectService.GetProjectManagerAsync(Model.id);
 }
-
-<h1>Details</h1>
 
 <div>
     <div class="container-fluid">
@@ -255,7 +253,14 @@
 
                                                     @if (User.IsInRole(nameof(Roles.Admin)) || (projectManager?.Id == pkUser.Id))
                                                     {
-                                                        <a class="btn btn-sm btn-outline-danger"><i class="fs-5 bi-archive"></i></a>
+                                                        @if (ticket.Archived)
+                                                        {
+                                                            <a class="btn btn-sm btn-outline-success" asp-action="Restore" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fs-5 bi-archive"></i></a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a class="btn btn-sm btn-outline-danger" asp-action="Archive" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fs-5 bi-archive"></i></a>
+                                                        }
                                                     }
                                                 </td>
                                             </tr>

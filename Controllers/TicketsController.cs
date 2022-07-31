@@ -17,9 +17,9 @@ using PestKontroll.Services.Interfaces;
 
 namespace PestKontroll.Controllers
 {
+    [Authorize]
     public class TicketsController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly UserManager<PKUser> _userManager;
         private readonly IPKProjectService _projectService;
         private readonly IPKLookupService _lookupService;
@@ -27,9 +27,8 @@ namespace PestKontroll.Controllers
         private readonly IPKFileService _fileService;
         private readonly IPKTicketHistoryService _historyService;
 
-        public TicketsController(ApplicationDbContext context, UserManager<PKUser> userManager, IPKProjectService projectService, IPKLookupService lookupService, IPKTicketService ticketService, IPKFileService fileService, IPKTicketHistoryService ticketHistoryService)
+        public TicketsController(UserManager<PKUser> userManager, IPKProjectService projectService, IPKLookupService lookupService, IPKTicketService ticketService, IPKFileService fileService, IPKTicketHistoryService ticketHistoryService)
         {
-            _context = context;
             _userManager = userManager;
             _projectService = projectService;
             _lookupService = lookupService;
@@ -38,14 +37,6 @@ namespace PestKontroll.Controllers
             _historyService = ticketHistoryService;
         }
 
-        // GET: Tickets
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.Tickets.Include(t => t.DeveloperUser).Include(t => t.OwnerUser).Include(t => t.Project).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
-            return View(await applicationDbContext.ToListAsync());
-        }
-
-        //GET: MyTickets
         public async Task<IActionResult> MyTickets()
         {
             PKUser pkUser = await _userManager.GetUserAsync(User);
@@ -55,7 +46,6 @@ namespace PestKontroll.Controllers
             return View(tickets);
         }
 
-        //GET: AllTickets
         public async Task<IActionResult> AllTickets()
         {
             int companyId = User.Identity.GetCompanyId().Value;
@@ -72,7 +62,6 @@ namespace PestKontroll.Controllers
             }
         }
 
-        //GET: ArchivedTickets
         public async Task<IActionResult> ArchivedTickets()
         {
             int companyId = User.Identity.GetCompanyId().Value;
@@ -82,8 +71,7 @@ namespace PestKontroll.Controllers
             return View(tickets);
         }
 
-        //GET: UnassignedTickets
-        [Authorize(Roles="Admin,ProjectManager")]
+        [Authorize(Roles="Admin, ProjectManager")]
         public async Task<IActionResult> UnassignedTickets()
         {
             int companyId = User.Identity.GetCompanyId().Value;
@@ -111,7 +99,7 @@ namespace PestKontroll.Controllers
             }
         }
 
-        //GET: AssignDeveloper
+        [Authorize(Roles = "Admin, ProjectManager")]
         [HttpGet]
         public async Task<IActionResult> AssignDeveloper(int id)
         {
@@ -123,7 +111,7 @@ namespace PestKontroll.Controllers
             return View(model);
         }
 
-        //POST: AssignDeveloper
+        [Authorize(Roles = "Admin, ProjectManager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AssignDeveloper(AssignDeveloperViewModel model)
@@ -153,7 +141,6 @@ namespace PestKontroll.Controllers
             return RedirectToAction(nameof(AssignDeveloper), new { id = model.Ticket.Id});
         }
 
-        // GET: Tickets/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -171,7 +158,7 @@ namespace PestKontroll.Controllers
             return View(ticket);
         }
 
-        // GET: Tickets/Create
+        [HttpGet]
         public async Task<IActionResult> Create()
         {
             PKUser pkUser = await _userManager.GetUserAsync(User);
@@ -180,7 +167,7 @@ namespace PestKontroll.Controllers
 
             if (User.IsInRole(nameof(Roles.Admin)))
             {
-                ViewData["ProjectId"] = new SelectList(await _projectService.GetAllProjectsByCompany(companyId), "id", "Name");
+                ViewData["ProjectId"] = new SelectList(await _projectService.GetAllProjectsByCompanyAsync(companyId), "id", "Name");
             }
             else
             {
@@ -192,9 +179,6 @@ namespace PestKontroll.Controllers
             return View();
         }
 
-        // POST: Tickets/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,ProjectId,TicketTypeId,TicketPriorityId,")] Ticket ticket)
@@ -228,7 +212,7 @@ namespace PestKontroll.Controllers
             }
             if (User.IsInRole(nameof(Roles.Admin)))
             {
-                ViewData["ProjectId"] = new SelectList(await _projectService.GetAllProjectsByCompany(pkUser.CompanyId), "id", "Name");
+                ViewData["ProjectId"] = new SelectList(await _projectService.GetAllProjectsByCompanyAsync(pkUser.CompanyId), "id", "Name");
             }
             else
             {
@@ -240,7 +224,7 @@ namespace PestKontroll.Controllers
             return View(ticket);
         }
 
-        // GET: Tickets/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -261,9 +245,6 @@ namespace PestKontroll.Controllers
             return View(ticket);
         }
 
-        // POST: Tickets/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Created,Updated,Archived,ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId,OwnerUserId,DeveloperUserId")] Ticket ticket)
@@ -301,7 +282,7 @@ namespace PestKontroll.Controllers
                 Ticket newTicket = await _ticketService.GetTicketAsNoTracking(ticket.Id);
                 await _historyService.AddHistoryAsync(oldTicket, newTicket, pKUser.Id);
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = id });
             }
 
             ViewData["TicketPriorityId"] = new SelectList(await _lookupService.GetTicketPrioritiesAsync(), "Id", "Name", ticket.TicketPriorityId);
@@ -334,10 +315,9 @@ namespace PestKontroll.Controllers
                 }
             }
 
-            return RedirectToAction("Details", new { id=ticketComment.TicketId });
+            return RedirectToAction(nameof(Details), new { id=ticketComment.TicketId });
         }
 
-        //POST: AddTicketAttachment
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddTicketAttachment([Bind("Id,FormFile,Description,TicketId")] TicketAttachment ticketAttachment)
@@ -375,10 +355,9 @@ namespace PestKontroll.Controllers
                 statusMessage = "Error: Ivalid data";
             }
 
-            return RedirectToAction("Details", new { id = ticketAttachment.TicketId, message = statusMessage });
+            return RedirectToAction(nameof(Details), new { id = ticketAttachment.TicketId, message = statusMessage });
         }
 
-        //GET: ShowFile
         public async Task<IActionResult> ShowFile(int id)
         {
             TicketAttachment ticketAttachment = await _ticketService.GetTicketAttachmentByIdAsync(id);
@@ -390,7 +369,8 @@ namespace PestKontroll.Controllers
             return File(fileData, $"application/{ext}");
         }
 
-        // GET: Tickets/Archive/5
+        [Authorize(Roles = "Admin, ProjectManager")]
+        [HttpGet]
         public async Task<IActionResult> Archive(int? id)
         {
             if (id == null)
@@ -408,7 +388,7 @@ namespace PestKontroll.Controllers
             return View(ticket);
         }
 
-        // POST: Tickets/Archive/5
+        [Authorize(Roles = "Admin, ProjectManager")]
         [HttpPost, ActionName("Archive")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ArchiveConfirmed(int id)
@@ -417,10 +397,11 @@ namespace PestKontroll.Controllers
 
             await _ticketService.ArchiveTicketAsync(ticket);
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(AllTickets));
         }
 
-        // GET: Tickets/Restore/5
+        [Authorize(Roles = "Admin, ProjectManager")]
+        [HttpGet]
         public async Task<IActionResult> Restore(int? id)
         {
             if (id == null)
@@ -438,7 +419,7 @@ namespace PestKontroll.Controllers
             return View(ticket);
         }
 
-        // POST: Tickets/Archive/5
+        [Authorize(Roles = "Admin, ProjectManager")]
         [HttpPost, ActionName("Restore")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RestoreConfirmed(int id)
@@ -447,7 +428,7 @@ namespace PestKontroll.Controllers
 
             await _ticketService.RestoreTicketAsync(ticket);
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(AllTickets));
         }
 
         private async Task<bool> TicketExists(int id)
