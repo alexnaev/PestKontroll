@@ -226,7 +226,7 @@
                                                     }
                                                     else
                                                     {
-                                                        if (User.IsInRole(nameof(Roles.Admin)) || pkUser.Id == projectManager.Id)
+                                                        if (User.IsInRole(nameof(Roles.Admin)) || pkUser.Id == projectManager?.Id)
                                                         {
                                                             <a class="btn btn-xs btn-info" asp-action="AssignDeveloper" asp-controller="Tickets" asp-route-id="@ticket.Id">Assign Dev</a>
                                                         }

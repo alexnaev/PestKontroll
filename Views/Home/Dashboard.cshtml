@@ -24,10 +24,42 @@
 		width: 100%;
 		height: 500px;
 	}
+
+	.active-projects {
+		background-color: rgba(54, 162, 235, 0.4);
+		border-color: rgba(54, 162, 235, 0.2);
+		border-style: solid;
+		border-width: 2px;
+		border-radius: 0.25rem;
+	}
+
+	.total-tickets {
+		background-color: rgba(255, 206, 86, 0.4);
+		border-color: rgba(255, 206, 86, 1);
+		border-style: solid;
+		border-width: 2px;
+		border-radius: 0.25rem;
+	}
+
+	.unassigned-tickets {
+		background-color: rgba(255, 99, 132, 0.4);
+		border-color: rgba(255, 99, 132, 1);
+		border-style: solid;
+		border-width: 2px;
+		border-radius: 0.25rem;
+	}
+
+	.total-data {
+		background-color: rgba(75, 192, 192, 0.4);
+		border-color: rgba(75, 192, 192, 1);
+		border-style: solid;
+		border-width: 2px;
+		border-radius: 0.25rem;
+	}
 </style>
 
 <h1>Dashboard</h1>
-<a href="javascript:void(0);">
+@*<a href="javascript:void(0);">
 	@if (pkUser.AvatarFileData != null)
 	{
 		<img class="media-object" src="data:image/*;base64,@Convert.ToBase64String(pkUser.AvatarFileData)" alt="" />
@@ -41,7 +73,7 @@
 <strong>@pkUser.FullName</strong>
 <span class="text-muted" style="font-size:x-small;">
 	<strong>@Model.Company.Name</strong>
-</span>
+</span>*@
 
 
 <div>
@@ -50,9 +82,9 @@
 		<div class="row mt-2">
 			<div class="col-lg-3 col-md-6 col-sm-6">
 				<a asp-action="AllProjects" asp-controller="Projects" style="text-decoration:none">
-					<div class="card text-center bg-info">
-						<div class="body">
-							<div class="p-15 text-light">
+					<div class="card text-center shadow">
+						<div class="body active-projects">
+							<div class="p-15 text-dark">
 								<h3>@Model.Projects.Where(p => p.StartDate < DateTime.Now && p.EndDate > DateTime.Now).Count()</h3>
 								<span>Active Projects</span>
 							</div>
@@ -62,9 +94,9 @@
 			</div>
 			<div class="col-lg-3 col-md-6 col-sm-6">
 				<a asp-action="AllTickets" asp-controller="Tickets" style="text-decoration:none">
-					<div class="card text-center bg-secondary">
-						<div class="body">
-							<div class="p-15 text-light">
+					<div class="card text-center shadow">
+						<div class="body total-tickets">
+							<div class="p-15 text-dark">
 
 								<h3>@Model.Tickets.Count()</h3>
 								<span>Total Tickets</span>
@@ -74,78 +106,137 @@
 				</a>
 			</div>
 			<div class="col-lg-3 col-md-6 col-sm-6">
-				<div class="card text-center bg-warning">
-					<div class="body">
-						<div class="p-15 text-light">
-							<h3>@Model.Tickets.Where(t => string.IsNullOrEmpty(t.DeveloperUserId)).Count()</h3>
-							<span>Unassigned Tickets</span>
+				@if (User.IsInRole(nameof(Roles.Admin)) || User.IsInRole(nameof(Roles.ProjectManager)))
+				{
+					<a asp-action="UnassignedTickets" asp-controller="Tickets" style="text-decoration:none">
+						<div class="card text-center shadow">
+							<div class="body unassigned-tickets">
+								<div class="p-15 text-dark">
+									<h3>@Model.Tickets.Where(t => string.IsNullOrEmpty(t.DeveloperUserId)).Count()</h3>
+									<span>Unassigned Tickets</span>
+								</div>
+							</div>
+						</div>
+					</a>
+				}
+				else
+				{
+					<div class="card text-center shadow">
+						<div class="body unassigned-tickets">
+							<div class="p-15 text-dark">
+								<h3>@Model.Tickets.Where(t => string.IsNullOrEmpty(t.DeveloperUserId)).Count()</h3>
+								<span>Unassigned Tickets</span>
+							</div>
 						</div>
 					</div>
-				</div>
+				}
 			</div>
 			<div class="col-lg-3 col-md-6 col-sm-6">
-				<div class="card text-center bg-dark">
-					<div class="body">
-						<div class="p-15 text-light">
-							<h3>
-								@(
-								Model.Projects.Count()
-								+ Model.Tickets.Count()
-								+ Model.Members.Count()
-								)
-							</h3>
-							<span>Total Data</span>
+				<a asp-action="Index" asp-controller="Companies" style="text-decoration:none">
+					<div class="card text-center shadow">
+						<div class="body total-data">
+							<div class="p-15 text-dark">
+								<h3>
+									@Model.Members.Count()
+								</h3>
+								<span>Total Members</span>
+							</div>
 						</div>
 					</div>
-				</div>
+				</a>
 			</div>
 		</div>
 		<div class="row gy-2">
 			<div class="col-md-12 col">
-				<div class="row col-cols-4 mt-5 bg-secondary">
+				<div class="row col-cols-4 mt-3">
 					<div class="card col m-1 p-2">
 						<div class="card-body">
 							<h5>Projects by Priority</h5>
-							<p>[Google Charts]</p>
-							<div id="chart3D"></div>
-						</div>
-					</div>
-					<div class="card col m-1 p-2">
-						<div class="card-body">
-							<h5>Project Tickets Count (%)</h5>
-							<p>[Google Charts]</p>
-							<div id="donut"></div>
-						</div>
-					</div>
-					<div class="card col m-1 p-2">
-						<div class="card-body">
-							<h5>Tickets by Priority</h5>
-							<p>[Morris Charts]</p>
-							<!-- Morris: Donut -->
 							<div class="col-md-12">
-								<div id="legend" class="donut-legend" style="font-size:x-small"></div>
-							</div>
-							<div class="col-md-12">
-								<div class="chart chart-md" id="morrisTicketPriority"></div>
+								<canvas id="projectsByPri"></canvas>
 							</div>
 						</div>
 					</div>
 					<div class="card col m-1 p-2">
 						<div class="card-body">
-							<h5>Tickets by Status</h5>
-							<p>[ChartJS]</p>
-							<!-- ChartJS: Pie/Doughnut -->
+							<h5>Project Tickets Count</h5>
 							<div class="col-md-12">
-								<!--  Chart.js Canvas Tag -->
-								<canvas id="donutChart"></canvas>
+								<canvas id="projectTicketsCount"></canvas>
 							</div>
 						</div>
 					</div>
+					@* Projects Table *@
+					<div class="col-6">
+						<div class="">
+							<div class="card m-1 p-2">
+								<div class="card-header">
+									<h2>Projects</h2>
+								</div>
+								<div class="card-body">
+									<div class="table-responsive" style="overflow-y:auto;height:250px;">
+										<table class="table table-hover">
+											<thead class="">
+												<tr>
+													<th>Name</th>
+													<th>Start Date</th>
+													<th>End Date</th>
+													<th>Priority</th>
+													<th>Details</th>
+												</tr>
+											</thead>
+											<tbody>
+												@foreach (var project in Model.Projects.OrderByDescending(t => t.EndDate))
+												{
+													<tr>
+														<td><a asp-action="Details" asp-controller="Projects" asp-route-id="@project.id" style="color:black"><strong>@project.Name</strong></a> </td>
+														<td><span style="font-size:small">@project.StartDate.ToString("dd.MM.yyyy")</span></td>
+														<td><span style="font-size:small">@project.EndDate.ToString("dd.MM.yyyy")</span></td>
+														<td>
+															@if (project.ProjectPriority?.Name == "Low")
+															{
+																<span class="badge bg-success">
+																	@project.ProjectPriority?.Name
+																</span>
+															}
+															else if(project.ProjectPriority?.Name == "Medium")
+															{
+																<span class="badge bg-primary">
+																	@project.ProjectPriority?.Name
+																</span>
+															}
+															else if(project.ProjectPriority?.Name == "High")
+															{
+																<span class="badge bg-warning">
+																	@project.ProjectPriority?.Name
+																</span>
+															}
+															else if (project.ProjectPriority?.Name == "Urgent")
+															{
+																<span class="badge bg-danger">
+																	@project.ProjectPriority?.Name
+																</span>
+															}
+														</td>
+														<td>
+															<a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-controller="Projects" asp-route-id="@project.id"><i class="fs-5 bi-justify"></i></a>
+														</td>
+													</tr>
+												}
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="card-footer">
+								</div>
+							</div>
+						</div>
+					</div>
+					
 				</div>
 			</div>
 		</div>
-		<div class="row gy-2">
-			<div class="cols mt-5 bg-secondary">
+		@*<div class="row gy-2">
+			<div class="cols mt-5">
 				<div class="card col m-1 p-2">
 					<div class="card-body" style="height:600px">
 						<h5>Project: Tickets vs Developers</h5>
@@ -157,7 +248,7 @@
 			</div>
 		</div>
 		<div class="row gy-2">
-		<div class="cols mt-5 bg-secondary">
+		<div class="cols mt-5">
 			<div class="card col m-1 p-2">
 				<div class="card-body" style="height:600px;overflow-y:auto;">
 					<h5>Project: Tickets vs Developers</h5>
@@ -166,62 +257,20 @@
 					<div id="plotlyChart"></div>
 				</div>
 			</div>
-		</div>
+		</div>*@
 	</div>
 	</div>
-	<hr />
-	<div class="mt-5 ">
+	<div class="mt-3 ">
 		<div class="row">
-			@* Projects Table *@
-			<div class="col">
-				<div class="bg-secondary">
-					<div class="card m-1 p-2">
-						<div class="card-header">
-							<h2>Projects</h2>
-						</div>
-						<div class="card-body">
-							<div class="table-responsive" style="overflow-y:auto;height:600px;">
-								<table class="table table-hover">
-									<thead class="">
-										<tr>
-											<th>Name</th>
-											<th>Start Date</th>
-											<th>End Date</th>
-											<th>Priority</th>
-											<th>Action</th>
-										</tr>
-									</thead>
-									<tbody>
-										@foreach (var project in Model.Projects.OrderByDescending(t => t.EndDate))
-										{
-											<tr>
-												<td><a asp-action="Details" asp-controller="Projects" asp-route-id="@project.id" style="color:black"><strong>@project.Name</strong></a> </td>
-												<td><span style="font-size:small">@project.StartDate.ToString("dd.MM.yyyy")</span></td>
-												<td><span style="font-size:small">@project.EndDate.ToString("dd.MM.yyyy")</span></td>
-												<td><span class="badge bg-dark">@project.ProjectPriority?.Name </span></td>
-												<td>
-													<a class="btn btn-sm btn-outline-info" asp-action="Details" asp-controller="Projects" asp-route-id="@project.id"><i class="fs-5 bi-justify"></i></a>
-												</td>
-											</tr>
-										}
-									</tbody>
-								</table>
-							</div>
-						</div>
-						<div class="card-footer">
-						</div>
-					</div>
-				</div>
-			</div>
 			@* Tickets Table *@
-			<div class="col">
-				<div class="bg-secondary">
+			<div class="col-6">
+				<div class="">
 					<div class="card m-1 p-2">
 						<div class="card-header">
 							<h2>Tickets</h2>
 						</div>
 						<div class="card-body">
-							<div class="table-responsive" style="overflow-y:auto;height:600px;">
+							<div class="table-responsive" style="overflow-y:auto;height:250px;">
 								<table class="table table-hover">
 									<thead class="">
 										<tr>
@@ -230,7 +279,7 @@
 											<th>Status</th>
 											<th>Priority</th>
 											<th>Date</th>
-											<th>Action</th>
+											<th>Details</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -248,16 +297,49 @@
 														<span class="badge bg-warning text-dark">Unassigned</span>
 													}
 												</td>
-												@if (ticket.TicketStatus.Name == "New")
-												{
-													<td><span class="badge bg-success rounded-pill">@ticket.TicketStatus.Name </span></td>
+													@if (ticket.TicketStatus.Name == "New")
+													{
+														<td><span class="badge bg-danger rounded-pill">@ticket.TicketStatus.Name </span></td>
 
-												}
-												else
-												{
-													<td><span class="badge bg-secondary rounded-pill">@ticket.TicketStatus.Name </span></td>
-												}
-												<td><span class="badge bg-dark">@ticket.TicketPriority.Name </span></td>
+													}
+													else if (ticket.TicketStatus.Name == "Development")
+													{
+														<td><span class="badge bg-warning rounded-pill">@ticket.TicketStatus.Name </span></td>
+													}
+													else if (ticket.TicketStatus.Name == "Testing")
+													{
+														<td><span class="badge bg-primary rounded-pill">@ticket.TicketStatus.Name </span></td>
+													}
+													else if (ticket.TicketStatus.Name == "Resolved")
+													{
+														<td><span class="badge bg-success rounded-pill">@ticket.TicketStatus.Name </span></td>
+													}
+												<td>
+												@if (ticket.TicketPriority.Name == "Low")
+													{
+														<span class="badge bg-success">
+															@ticket.TicketPriority.Name
+														</span>
+													}
+												else if (ticket.TicketPriority.Name == "Medium")
+													{
+														<span class="badge bg-primary">
+															@ticket.TicketPriority.Name
+														</span>
+													}
+												else if (ticket.TicketPriority.Name == "High")
+													{
+														<span class="badge bg-warning">
+															@ticket.TicketPriority.Name
+														</span>
+													}
+												else if (ticket.TicketPriority.Name == "Urgent")
+													{
+														<span class="badge bg-danger">
+															@ticket.TicketPriority.Name
+														</span>
+													}
+												</td>
 												<td><span style="font-size:small">@ticket.Created.ToString("dd.MM.yyyy")</span></td>
 												<td>
 													<a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fs-5 bi-justify"></i></a>
@@ -273,8 +355,26 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-md-2 ">
-				<div class="bg-dark">
+		<div class="card col m-1 p-2">
+			<div class="card-body">
+				<h5>Tickets by Priority</h5>
+				<div class="col-md-12">
+					<canvas id="ticketPriority"></canvas>
+				</div>
+			</div>
+		</div>
+		<div class="card col m-1 p-2">
+			<div class="card-body">
+				<h5>Tickets by Status</h5>
+				<!-- ChartJS: Pie/Doughnut -->
+				<div class="col-md-12">
+					<!--  Chart.js Canvas Tag -->
+					<canvas id="donutChart"></canvas>
+				</div>
+			</div>
+		</div>
+			@*<div class="col-md-2 ">
+				<div class="">
 					<div class="card m-1 p-2">
 						<div class="card-header">
 							<h2>Members</h2>
@@ -309,261 +409,199 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div>*@
 		</div>
 	</div>
 </div>
 @section scripts{
-	<!--Google Charts-->
-	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-
-	<script type="text/javascript">
-		google.load("visualization", "1", { packages: ["corechart"] });
-		google.setOnLoadCallback(drawChart);
-		function drawChart() {
-			$.ajax({
-				type: "POST",
-				url: "/Home/GglProjectPriority",
-				data: '{}',
-				contentType: "application/json; charset=utf-8",
-				dataType: "json",
-				success: function (result) {
-					var data = google.visualization.arrayToDataTable(result);
-
-					//3D Pie
-					var options = {
-						title: 'Project Priority',
-						is3D: true,
-						chartArea: { left: 0,bottom: 15,width: '100%', height: '100%'},
-						legend: { position: 'bottom' }
-
-					};
-
-					var chart = new google.visualization.PieChart($("#chart3D")[0]);
-					chart.draw(data, options);
-				},
-				failure: function (rresult) {
-					alert(result.d);
-				},
-				error: function (result) {
-					alert(result.d);
-				}
-			});
-		}
-	</script>
-	<script type="text/javascript">
-		google.load("visualization", "1", { packages: ["corechart"] });
-		google.setOnLoadCallback(drawChart);
-		function drawChart() {
-			$.ajax({
-				type: "POST",
-				url: "/Home/GglProjectTickets",
-				data: '{}',
-				contentType: "application/json; charset=utf-8",
-				dataType: "json",
-				success: function (result) {
-					var data = google.visualization.arrayToDataTable(result);
-
-					//Donut
-					var options = {
-						title: 'Company Ticket Distribution',
-						pieHole: 0.3,
-						chartArea: { left: 0,bottom: 15,width: '100%', height: '100%'},
-						legend: { position: 'bottom' }
-					};
-					var chart = new google.visualization.PieChart($("#donut")[0]);
-					chart.draw(data, options);
-				},
-				failure: function (rresult) {
-					alert(result.d);
-				},
-				error: function (result) {
-					alert(result.d);
-				}
-			});
-		}
-	</script>
-
-	@* Morris Donut Chart *@
-<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
-<script>
-
-	var morrisDonutData = [{
-		label: "Low",
-		value: @Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(PKTicketPriority.Low)).Count()
-	}, {
-		label: "Medium",
-		value: @Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(PKTicketPriority.Medium)).Count()
-	}, {
-		label: "High",
-		value: @Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(PKTicketPriority.High)).Count()
-	}, {
-		label: "Urgent",
-		value: @Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(PKTicketPriority.Urgent)).Count()
-	}];
-
-
-	/*
-	Morris: Donut
-	*/
-	if ($('#morrisTicketPriority').get(0)) {
-		var donutChart = Morris.Donut({
-			resize: true,
-			element: 'morrisTicketPriority',
-			data: morrisDonutData,
-			colors: ['#0088cc', '#734ba9', '#E36159', '#ff993b']
-		});
-
-		donutChart.options.data.forEach(function(label, i) {
-			var legendItem = $('<span></span>').text( label['label'] + ": " +label['value']).prepend('<span>&nbsp;</span>');
-			legendItem.find('span')
-			  .css('backgroundColor', donutChart.options.colors[i])
-			  .css('width', '20px')
-			  .css('display', 'inline-block')
-			  .css('margin', '10px');
-			$('#legend').append(legendItem)
-		});
-	};
-</script>
-
-<!-- *** Begin Chart JS Pie/Donut *** -->
+	<!-- *** Begin Chart JS Pie/Donut *** -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.0/dist/chart.min.js"></script>
+	<script>
+		var projectsTicketsData = [];
+		var projectsTicketsLabels = [];
+	</script>
+	@foreach (var project in Model.Projects)
+	{
+		<script>
+			projectsTicketsData.push(@project.Tickets.Count());
+			projectsTicketsLabels.push('@project.Name');
+		</script>
+	}
 <script>
 
 	var donutChartCanvas = $('#donutChart').get(0).getContext('2d');
 	var donutData = {
-		labels: [
-			'@nameof(PKTicketStatus.Development)',
-			'@nameof(PKTicketStatus.New)',
-			'@nameof(PKTicketStatus.Resolved)',
-			'@nameof(PKTicketStatus.Testing)'
+			labels: [
+				'@nameof(PKTicketStatus.New)',
+				'@nameof(PKTicketStatus.Development)',
+				'@nameof(PKTicketStatus.Testing)',
+				'@nameof(PKTicketStatus.Resolved)'
 		],
 		datasets: [
 			{
 				data: [
-					@Model.Tickets.Where(t=> t.TicketStatus.Name == nameof(PKTicketStatus.Development)).Count(),
 					@Model.Tickets.Where(t=> t.TicketStatus.Name ==nameof(PKTicketStatus.New)).Count(),
-					@Model.Tickets.Where(t=> t.TicketStatus.Name ==nameof(PKTicketStatus.Resolved)).Count(),
-					@Model.Tickets.Where(t=> t.TicketStatus.Name ==nameof(PKTicketStatus.Testing)).Count()
+					@Model.Tickets.Where(t=> t.TicketStatus.Name == nameof(PKTicketStatus.Development)).Count(),
+					@Model.Tickets.Where(t=> t.TicketStatus.Name ==nameof(PKTicketStatus.Testing)).Count(),
+					@Model.Tickets.Where(t=> t.TicketStatus.Name ==nameof(PKTicketStatus.Resolved)).Count()
 				],
 				backgroundColor: [
 					'rgba(255, 99, 132, 0.2)',
-					'rgba(54, 162, 235, 0.2)',
 					'rgba(255, 206, 86, 0.2)',
+					'rgba(54, 162, 235, 0.2)',
 					'rgba(75, 192, 192, 0.2)'
 				],
 				borderColor: [
 					'rgba(255, 99, 132, 1)',
-					'rgba(54, 162, 235, 1)',
 					'rgba(255, 206, 86, 1)',
+					'rgba(54, 162, 235, 1)',
 					'rgba(75, 192, 192, 1)'
 				]
 			}
 		]
 	};
 
-	var donutOptions = {
-		maintainAspectRatio: false,
-		responsive: true,
-	};
-	//Create pie or douhnut chart
-	// You can switch between pie and douhnut using the method below.
-	new Chart(donutChartCanvas, {
-		type: 'doughnut',
-		data: donutData,
-		options: donutOptions
-	});
+		var donutOptions = {
+			maintainAspectRatio: false,
+			responsive: true,
+		};
+		//Create pie or douhnut chart
+		// You can switch between pie and douhnut using the method below.
+		new Chart(donutChartCanvas, {
+			type: 'doughnut',
+			data: donutData,
+			options: donutOptions
+		});
+
+		//Project Tickets Count
+		var projectTicketsChartCanvas = $('#projectTicketsCount').get(0).getContext('2d');
+		var projectTicketsData = {
+			labels: projectsTicketsLabels,
+			datasets: [
+				{
+					data: projectsTicketsData,
+					backgroundColor: [
+						'rgba(255, 206, 86, 0.2)',
+						'rgba(54, 162, 235, 0.2)',
+						'rgba(75, 192, 192, 0.2)'
+					],
+					borderColor: [
+						'rgba(255, 206, 86, 1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(75, 192, 192, 1)'
+					]
+				}
+			]
+		};
+
+		var projectTicketsOptions = {
+			maintainAspectRatio: false,
+			responsive: true,
+		};
+		//Create pie or douhnut chart
+		// You can switch between pie and douhnut using the method below.
+		new Chart(projectTicketsChartCanvas, {
+			type: 'doughnut',
+			data: projectTicketsData,
+			options: projectTicketsOptions
+		});
+
+		//Projects By Priority
+		var projectsByPriChartCanvas = $('#projectsByPri').get(0).getContext('2d');
+		var projectsByPriData = {
+			labels: [
+				'@nameof(PKProjectPriority.Low)',
+				'@nameof(PKProjectPriority.Medium)',
+				'@nameof(PKProjectPriority.High)',
+				'@nameof(PKProjectPriority.Urgent)'
+			],
+			datasets: [
+				{
+					data: [
+							@Model.Projects.Where(p=> p.ProjectPriority.Name == nameof(PKProjectPriority.Low)).Count(),
+							@Model.Projects.Where(p=> p.ProjectPriority.Name == nameof(PKProjectPriority.Medium)).Count(),
+							@Model.Projects.Where(p=> p.ProjectPriority.Name == nameof(PKProjectPriority.High)).Count(),
+							@Model.Projects.Where(p=> p.ProjectPriority.Name == nameof(PKProjectPriority.Urgent)).Count(),
+					],
+					backgroundColor: [
+						'rgba(75, 192, 192, 0.2)',
+						'rgba(54, 162, 235, 0.2)',
+						'rgba(255, 206, 86, 0.2)',
+						'rgba(255, 99, 132, 0.2)',
+					],
+					borderColor: [
+						'rgba(75, 192, 192, 1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(255, 99, 132, 1)',
+					]
+				}
+			]
+		};
+
+		var projectsByPriOptions = {
+			maintainAspectRatio: false,
+			responsive: true,
+		};
+		//Create pie or douhnut chart
+		// You can switch between pie and douhnut using the method below.
+		new Chart(projectsByPriChartCanvas, {
+			type: 'pie',
+			data: projectsByPriData,
+			options: projectsByPriOptions
+		});
+
+		//Ticket By Priority
+		var ticketPriorityChartCanvas = $('#ticketPriority').get(0).getContext('2d');
+		var ticketPriorityData = {
+			labels: [
+				'@nameof(PKTicketPriority.Low)',
+				'@nameof(PKTicketPriority.Medium)',
+				'@nameof(PKTicketPriority.High)',
+				'@nameof(PKTicketPriority.Urgent)'
+			],
+			datasets: [
+				{
+					data: [
+							@Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(PKTicketPriority.Low)).Count(),
+							@Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(PKTicketPriority.Medium)).Count(),
+							@Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(PKTicketPriority.High)).Count(),
+							@Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(PKTicketPriority.Urgent)).Count(),
+					],
+					backgroundColor: [
+						'rgba(75, 192, 192, 0.2)',
+						'rgba(54, 162, 235, 0.2)',
+						'rgba(255, 206, 86, 0.2)',
+						'rgba(255, 99, 132, 0.2)',
+					],
+					borderColor: [
+						'rgba(75, 192, 192, 1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(255, 99, 132, 1)',
+					]
+				}
+			]
+		};
+
+		var ticketPriorityOptions = {
+			maintainAspectRatio: false,
+			responsive: true,
+		};
+		//Create pie or douhnut chart
+		// You can switch between pie and douhnut using the method below.
+		new Chart(ticketPriorityChartCanvas, {
+			type: 'pie',
+			data: ticketPriorityData,
+			options: ticketPriorityOptions
+		});
 </script>
 <!-- *** End Chart JS Donut *** -->
-
-<!-- *** Begin AM Charts *** -->
-
-<!-- Resources -->
-<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
-
-<!-- Chart code -->
-<script>
-	$.ajax({
-		type: "POST",
-		url: "/Home/AmCharts",
-		data: '{}',
-		contentType: "application/json; charset=utf-8",
-		dataType: "json",
-		success: function (result) {
-			am4core.ready(function() {
-
-				// Themes begin
-				// Themes end
-
-				 // Create chart instance
-				var chart = am4core.create("chartdiv", am4charts.XYChart);
-
-
-				// Add data
-				chart.data = result;
-
-				// Create axes
-				var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
-				categoryAxis.dataFields.category = "project";
-				categoryAxis.numberFormatter.numberFormat = "#";
-				categoryAxis.renderer.inversed = true;
-				categoryAxis.renderer.grid.template.location = 0;
-				categoryAxis.renderer.cellStartLocation = 0.1;
-				categoryAxis.renderer.cellEndLocation = 0.9;
-
-				var  valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
-				valueAxis.renderer.opposite = true;
-
-				// Create series
-				function createSeries(field, name) {
-				  var series = chart.series.push(new am4charts.ColumnSeries());
-				  series.dataFields.valueX = field;
-				  series.dataFields.categoryY = "project";
-				  series.name = name;
-				  series.columns.template.tooltipText = "{name}: [bold]{valueX}[/]";
-				  series.columns.template.height = am4core.percent(100);
-				  series.sequencedInterpolation = true;
-
-				  var valueLabel = series.bullets.push(new am4charts.LabelBullet());
-				  valueLabel.label.text = "{valueX}";
-				  valueLabel.label.horizontalCenter = "left";
-				  valueLabel.label.dx = 10;
-				  valueLabel.label.hideOversized = false;
-				  valueLabel.label.truncate = false;
-
-				  var categoryLabel = series.bullets.push(new am4charts.LabelBullet());
-				  categoryLabel.label.text = "{name}";
-				  categoryLabel.label.horizontalCenter = "right";
-				  categoryLabel.label.dx = -10;
-				  categoryLabel.label.fill = am4core.color("#fff");
-				  categoryLabel.label.hideOversized = false;
-				  categoryLabel.label.truncate = false;
-				}
-
-				createSeries("tickets", "Tickets");
-				createSeries("developers", "Devs");
-
-			}); // end am4core.ready()
-
-
-		},
-		failure: function (result) {
-			alert(result.d);
-		},
-		error: function (result) {
-			alert(result.d);
-		}
-	});
-</script>
-
-<!-- *** End AM Charts *** -->
 
 <!--  Plotly Charts  -->
 <!-- Load plotly.js into the DOM -->
 <script src='https://cdn.plot.ly/plotly-2.4.2.min.js'></script>
-<script>
+@*<script>
 	$.ajax({
 		type: "POST",
 		url: "/Home/PlotlyBarChart",
@@ -585,4 +623,4 @@
 			}
 		});
 </script>
-}
+*@}
