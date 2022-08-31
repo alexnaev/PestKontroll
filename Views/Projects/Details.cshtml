@@ -17,6 +17,12 @@
     var end = Model.EndDate.DateTime;
     var today = DateTime.Now;
     var percent = today >= end ? 100 : today < start ? 0 : Math.Round((today.Subtract(start)) / (end.Subtract(start)) * 100);
+
+    var Ttotal = Model.Tickets.Count();
+    var Tfalse = Model.Tickets.Count(t => t.TicketStatus.Name != nameof(PKTicketStatus.Resolved) && t.Archived == true);
+    var Treal = Ttotal - Tfalse;
+    var Tresolved = Model.Tickets.Count(t => t.TicketStatus.Name == nameof(PKTicketStatus.Resolved));
+    var projectProgress = Math.Round((Convert.ToDouble(Tresolved)) / (Convert.ToDouble(Treal)) * 100);
 }
 
 <style>
@@ -83,48 +89,13 @@
                                 </div>
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: @percent%;">
-                                        <span class="progress-value">@percent%</span>
+                                        <span class="progress-value">@percent% Time Spent</span>
                                     </div>
                                 </div>
-                                <div class="d-flex justify-content-between mt-3">
-                                    <ul class="right_chat list-unstyled mb-0 project-team">
-
-                                        @foreach (PKUser member in await ProjectService.GetAllProjectMembersExeptPMAsync(Model.id))
-                                        {
-                                            <li class="">
-                                                <a href="">
-                                                    <div class="media">
-                                                        @if (member.AvatarFileData != null)
-                                                        {
-                                                            <img class="rounded-circle" style="width:30px;height:30px;" src="data:image/*;base64,@(Convert.ToBase64String(projectManager.AvatarFileData))" alt="" />
-                                                        }
-                                                        else
-                                                        {
-                                                            <img class="rounded-circle" style="width:30px;height:30px;" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" />
-                                                        }
-
-                                                    </div>
-                                                </a>
-                                                <div class="">
-                                                    <span class="" style="font-size:small">@member.FullName</span><br />
-                                                    <span class="" style="font-size:x-small">[@((await UserManager.GetRolesAsync(member)).FirstOrDefault())]</span>
-                                                </div>
-                                            </li>
-                                        }
-                                    </ul>
-                                    <div class="mt-4">
-                                        @if (User.IsInRole(nameof(Roles.Admin)) || (projectManager?.Id == pkUser.Id))
-                                        {
-                                            <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-controller="Projects" asp-route-id="@Model.id"><i class="fs-5 bi-pencil"></i></a>
-                                            @if (Model.Archived)
-                                            {
-                                                <a class="btn btn-sm btn-outline-success" asp-action="Restore" asp-controller="Projects" asp-route-id="@Model.id"><i class="fs-5 bi-archive"></i></a>
-                                            }
-                                            else
-                                            {
-                                                <a class="btn btn-sm btn-outline-danger" asp-action="Archive" asp-controller="Projects" asp-route-id="@Model.id"><i class="fs-5 bi-archive"></i></a>
-                                            }
-                                        }
+                                <div class="mt-3"><strong>Project Progress</strong></div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: @projectProgress%;">
+                                        <span class="progress-value">@projectProgress% Tickets Resolved</span>
                                     </div>
                                 </div>
                             </div>
@@ -177,7 +148,31 @@
                                     </div>
                                 </div>
                             }
-                            
+                            <ul class="right_chat list-unstyled mb-0 mt-3 project-team">
+
+                                @foreach (PKUser member in await ProjectService.GetAllProjectMembersExeptPMAsync(Model.id))
+                                {
+                                    <li class="">
+                                        <a href="">
+                                            <div class="media">
+                                                @if (member.AvatarFileData != null)
+                                                {
+                                                    <img class="rounded-circle" style="width:30px;height:30px;" src="data:image/*;base64,@(Convert.ToBase64String(projectManager.AvatarFileData))" alt="" />
+                                                }
+                                                else
+                                                {
+                                                    <img class="rounded-circle" style="width:30px;height:30px;" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" />
+                                                }
+
+                                            </div>
+                                        </a>
+                                        <div class="">
+                                            <span class="" style="font-size:small">@member.FullName</span><br />
+                                            <span class="" style="font-size:x-small">[@((await UserManager.GetRolesAsync(member)).FirstOrDefault())]</span>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
                         </div>
                     </div>
                 </div>
