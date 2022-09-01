@@ -13,6 +13,11 @@
 
     PKUser pkUser = await UserManager.GetUserAsync(User);
     PKUser projectManager = await ProjectService.GetProjectManagerAsync(Model.ProjectId);
+
+    var start = Model.Project.StartDate.DateTime;
+    var end = Model.Project.EndDate.DateTime;
+    var today = DateTime.Now;
+    var percent = today >= end ? 100 : today < start ? 0 : Math.Round((today.Subtract(start)) / (end.Subtract(start)) * 100);
 }
 
 <div>
@@ -22,36 +27,67 @@
                 <div class="row col-cols-2 mt-5">
                     <div class="card col m-1 p-2">
                         <div class="card-body">
-                            <h5>@Model.Title</h5>
-                            <p>@Model.Description</p>
-                            @if (!string.IsNullOrEmpty(Model.DeveloperUserId))
-                            {
-                                <a href="javascript:void(0);">
-                                    @if (Model.DeveloperUser?.AvatarFileData != null)
-                                    {
-                                        <img class="media-object" src="data:image/*;base64,@Convert.ToBase64String(Model.DeveloperUser.AvatarFileData)" alt="" />
-                                    }
-                                    else
-                                    {
-                                        <img class="media-object" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" style="width:30px;height:30px" />
-                                    }
-                                </a>
-                                <br />
-                                <span class="text-muted" style="font-size:x-small;">
-                                    Developer:	<strong>@Model.DeveloperUser.FullName</strong>
-                                </span>
-
-                            }
+                            <div class="d-flex justify-content-between">
+                                <h4>@Model.Title</h4>
+                                <div><strong>Ticket Created: </strong><span class="">@Model.Created.ToString("dd MMM yyyy")</span></div>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2 mb-3">
+                                <strong>Priority:&nbsp;</strong>
+                                @if (Model.TicketPriority.Name == "Low")
+                                {
+                                    <span class="badge bg-success">
+                                        @Model.TicketPriority.Name
+                                    </span>
+                                }
+                                else if (Model.TicketPriority.Name == "Medium")
+                                {
+                                    <span class="badge bg-primary">
+                                        @Model.TicketPriority.Name
+                                    </span>
+                                }
+                                else if (Model.TicketPriority.Name == "High")
+                                {
+                                    <span class="badge bg-warning">
+                                        @Model.TicketPriority.Name
+                                    </span>
+                                }
+                                else if (Model.TicketPriority.Name == "Urgent")
+                                {
+                                    <span class="badge bg-danger">
+                                        @Model.TicketPriority.Name
+                                    </span>
+                                }
+                                @*Ticket Status*@
+                                @if (Model.TicketStatus.Name == "New")
+                                {
+                                    <div class="ms-auto"><strong>Status:&nbsp;</strong><span class="badge bg-danger">@Model.TicketStatus.Name</span></div>
+                                }
+                                else if (Model.TicketStatus.Name == "Development")
+                                {
+                                    <div class="ms-auto"><strong>Status:&nbsp;</strong><span class="badge bg-warning">@Model.TicketStatus.Name</span></div>
+                                }
+                                else if (Model.TicketStatus.Name == "Testing")
+                                {
+                                    <div class="ms-auto"><strong>Status:&nbsp;</strong><span class="badge bg-primary">@Model.TicketStatus.Name</span></div>
+                                }
+                                else if (Model.TicketStatus.Name == "Resolved")
+                                {
+                                    <div class="ms-auto"><strong>Status:&nbsp;</strong><span class="badge bg-success">@Model.TicketStatus.Name</span></div>
+                                }
+                            </div>
+                            <p><strong>Description:</strong><br /><em>@Model.TicketType.Name:&nbsp;</em>@Model.Description</p>
+                            
                             <hr />
                             <div class="progress-container progress-info m-b-25">
-                                <span class="progress-badge" style="font-size:small">Project: <a asp-controller="Projects" asp-action="Details" asp-route-id="@Model.ProjectId">@Model.Project.Name</a></span>
+                                <span class="progress-badge" style="font-size:small"><strong>Project: </strong><a asp-controller="Projects" asp-action="Details" asp-route-id="@Model.ProjectId">@Model.Project.Name</a></span>
+                                <div class="d-flex justify-content-between mt-3">
+                                    <div style="font-size:small"><strong>Project Start:</strong>&nbsp;<span class="text-success">@Model.Project.StartDate.ToString("dd MMM yyyy")</span></div>
+                                    <div style="font-size:small"><strong>Project Deadline:</strong>&nbsp;<span class="text-danger">@Model.Project.EndDate.ToString("dd MMM yyyy")</span></div>
+                                </div>
                                 <div class="progress">
                                     @*Calculate progress percentage*@
                                     @{
-                                        var start = Model.Project.StartDate.DateTime;
-                                        var end = Model.Project.EndDate.DateTime;
-                                        var today = DateTime.Now;
-                                        var percent = today >= end ? 100 : today < start ? 0 : Math.Round((today.Subtract(start)) / (end.Subtract(start)) * 100);
+                                        
                                     }
                                     <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: @percent%;">
                                         @*Variable from razor logic*@
@@ -63,13 +99,23 @@
                     </div>
                     <div class="card col m-1 p-2">
                         <div class="card-body">
-                            <ul class="list-unstyled">
-                                <li><strong>Date Entered:</strong> <span class="">  @Model.Created.ToString("dd MMM yyyy")</span></li>
-                                <li><strong>Deadline:</strong> <span class="">  @Model.Project.EndDate.ToString("dd MMM yyyy")</span></li>
-                                <li><strong>Type:</strong> <span class="">  @Model.TicketType.Name</span></li>
-                                <li><strong>Priority:</strong> <span class="">  @Model.TicketPriority.Name</span></li>
-                                <li><strong>Status:</strong> <span class="">  @Model.TicketStatus.Name</span></li>
-                            </ul>
+                            @if (!string.IsNullOrEmpty(Model.DeveloperUserId))
+                            {
+                                <a href="javascript:void(0);">
+                                    @if (Model.DeveloperUser?.AvatarFileData != null)
+                                    {
+                                        <img class="media-object" src="data:image/*;base64,@Convert.ToBase64String(Model.DeveloperUser.AvatarFileData)" alt="" style="width:60px;height:60px" />
+                                    }
+                                    else
+                                    {
+                                        <img class="media-object" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" style="width:60px;height:60px" />
+                                    }
+                                </a>
+                                <br />
+                                <h5>@Model.DeveloperUser.FullName</h5>
+                                <span>@Model.DeveloperUser.Email</span>
+                                <p class="text-muted">Developer</p>
+                            }
                         </div>
                     </div>
                 </div>
@@ -79,7 +125,7 @@
                     <div class="">
                         <div class="card m-1 p-2">
                             <div class="card-header">
-                                <h2>Comments</h2>
+                                <h4>Comments</h4>
                             </div>
                             <div class="card-body" style="overflow-y:auto;height:600px;">
 
@@ -139,7 +185,7 @@
                     <div class="">
                         <div class="card m-1 p-2">
                             <div class="card-header">
-                                <h2>Attachments</h2>
+                                <h4>Attachments</h4>
                             </div>
                             <div class="card-body" style="overflow-y:auto;height:300px;">
 
@@ -201,7 +247,7 @@
                 <div class="">
                     <div class="card m-1 p-2">
                         <div class="card-header">
-                            <h2>History</h2>
+                            <h4>History</h4>
                             <hr />
                         </div>
                         <div class="card-body" style="overflow-y:auto;height:1000px;background-color:antiquewhite">
