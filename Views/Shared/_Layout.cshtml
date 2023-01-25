@@ -8,12 +8,26 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - PestKontroll</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    @* <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous"> *@
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+    <!-- STYLE CSS -->
+    <link href="~/css/style.css" rel="stylesheet" />
+    <link href="~/css/dark-style.css" rel="stylesheet" />
+    <link href="~/css/transparent-style.css" rel="stylesheet">
+    <link href="~/css/skin-modes.css" rel="stylesheet" />
+    
+    <!--- FONT-ICONS CSS -->
+    <link href="~/css/icons.css" rel="stylesheet" />
+
+    <!-- COLOR SKIN CSS -->
+    <link id="theme" rel="stylesheet" type="text/css" media="all" href="~/css/colors/color1.css" />
+
 </head>
 <body>
-    <div class="container-fluid overflow-hidden">
-        <div class="row vh-100 overflow-auto">
+    <div class="container-fluid overflow-hidden vh-100">
+        @* <div class="row vh-100 overflow-auto">
             <div class="col-12 col-sm-3 col-xl-2 px-sm-2 px-0 bg-dark d-flex sticky-top">
                 <div class="d-flex flex-sm-column flex-row flex-grow-1 align-items-center align-items-sm-start px-3 pt-2 text-white">
                     <a href="/" class="d-flex align-items-center pb-sm-3 mb-md-0 me-md-auto text-white text-decoration-none">
@@ -92,11 +106,48 @@
                     </div>
                 </footer>
             </div>
-        </div>
+        </div> *@
+        <main class="row">
+                    @RenderBody()
+                </main>
+                <footer class="row bg-light py-4 mt-auto">
+                    <div class="container">
+                        &copy; 2022 - PestKontroll - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    </div>
+                </footer>
     </div>
 
+    <!-- JQUERY -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+
+    <!-- BOOTSTRAP JS -->
+    <script src="~/plugins/bootstrap/js/popper.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- COUNTERS JS-->
+    <script src="~/plugins/counters/counterup.min.js"></script>
+    <script src="~/plugins/counters/waypoints.min.js"></script>
+    <script src="~/plugins/counters/counters-1.js"></script>
+
+    <!-- Perfect SCROLLBAR JS-->
+    <script src="~/plugins/owl-carousel/owl.carousel.js"></script>
+    <script src="~/plugins/company-slider/slider.js"></script>
+
+    <!-- Star Rating Js-->
+    <script src="~/plugins/rating/jquery-rate-picker.js"></script>
+    <script src="~/plugins/rating/rating-picker.js"></script>
+
+    <!-- Star Rating-1 Js-->
+    <script src="~/plugins/ratings-2/jquery.star-rating.js"></script>
+    <script src="~/plugins/ratings-2/star-rating.js"></script>
+
+    <!-- Sticky js -->
+    <script src="~/js/sticky.js"></script>
+
+    <!-- CUSTOM JS -->
+    <script src="~/js/landing.js"></script>
+
+    @* <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script> *@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
