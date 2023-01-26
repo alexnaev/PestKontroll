@@ -5,8 +5,6 @@
     PKUser pkUser = await UserManager.GetUserAsync(User);
 }
 
-<div class="dropdown py-sm-4 ms-auto ms-sm-0 flex-shrink-1">
-
     @if (SignInManager.IsSignedIn(User))
     {
         @* <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -84,7 +82,7 @@
                     </div>
                 </div>
                 <div class="dropdown-divider m-0"></div>
-                <a class="dropdown-item" href="profile.html">
+                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
                     <i class="dropdown-icon fe fe-user"></i> Profile
                 </a>
                 <a class="dropdown-item" href="email-inbox.html">
@@ -117,6 +115,5 @@
             <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Login">Sign In</a></li>
         </ul> *@
     }
-</div>
 <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
 </form>

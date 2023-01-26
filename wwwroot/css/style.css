@@ -18411,7 +18411,7 @@ img {
 .img-card:before {
     content: "";
     position: absolute;
-    background: url(../images/svgs/circle.svg);
+    background: url(/img/svgs/circle.svg);
     background-position: right;
     background-repeat: no-repeat;
     width: 100%;
