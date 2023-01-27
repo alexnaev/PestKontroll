@@ -206,7 +206,7 @@
 
 		<!-- ROW-3 -->
 		@{
-			List<TicketHistory> histories = (await HistoryService.GetCompanyTicketsHistoriesAsync(pkUser.CompanyId)).Take(10).OrderByDescending(h => h.Created).ToList();
+			List<TicketHistory> histories = (await HistoryService.GetCompanyTicketsHistoriesAsync(pkUser.CompanyId)).OrderByDescending(h => h.Created).Take(10).ToList();
 		}
 		<div class="row">
 			<div class="col-xl-4 col-md-12">
