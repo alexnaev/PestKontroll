@@ -4,76 +4,113 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<div class="side-app">
 
-<h4>Project</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Project.Name" class="control-label"></label>
-                <input asp-for="Project.Name" class="form-control" />
-                <span asp-validation-for="Project.Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Project.Description" class="control-label"></label>
-                <input asp-for="Project.Description" class="form-control" />
-                <span asp-validation-for="Project.Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Project.StartDate" class="control-label"></label>
-                <input asp-for="Project.StartDate" class="form-control" />
-                <span asp-validation-for="Project.StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Project.EndDate" class="control-label"></label>
-                <input asp-for="Project.EndDate" class="form-control" />
-                <span asp-validation-for="Project.EndDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Choose a priority</label>
-                <select asp-for="Project.ProjectPriorityId" class ="form-control" asp-items="@Model.PriorityList"></select>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Project Image</label>
-                <input asp-for="Project.ImageFormFile" class="form-control" type="file" accept=".png, .jpg, .jpeg, .gif" 
-                onchange="document.getElementById('ImageFileData').src = window.URL.createObjectURL(this.files[0])" />
-                <span asp-validation-for="Project.ImageFormFile" class="text-danger"></span>
-            </div>
+    <!-- CONTAINER -->
+    <div class="main-container container-fluid">
 
-            <label>Image Preview</label>
-            @if (Model.Project?.ImageFileData != null)
-            {
-                <img id="ImageFileData" class="img-fluid img-thumbnail" style="width:100px;height:80px;"
-                src="data:image/*;base64,@Convert.ToBase64String(Model.Project.ImageFileData)" />
-            }
-            else
-            {
-                <img id="ImageFileData" class="img-fluid img-thumbnail" style="width:100px;height:80px;" src="" />
-            }
+        <!-- ROW-1 OPEN -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Create New Project</div>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="Create" method="post" enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="row mb-4">
+                                <label asp-for="Project.Name" class="col-md-3 form-label"></label>
+                                <div class="col-md-9">
+                                    <input asp-for="Project.Name" class="form-control" />
+                                    <span asp-validation-for="Project.Name" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <label asp-for="Project.StartDate" class="col-md-3 form-label"></label>
+                                <div class="col-md-9">
+                                    <input asp-for="Project.StartDate" class="form-control" />
+                                    <span asp-validation-for="Project.StartDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <label asp-for="Project.EndDate" class="col-md-3 form-label"></label>
+                                <div class="col-md-9">
+                                    <input asp-for="Project.EndDate" class="form-control" />
+                                    <span asp-validation-for="Project.EndDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <label class="col-md-3 form-label">Choose a Priority</label>
+                                <div class="col-md-9">
+                                    <select asp-for="Project.ProjectPriorityId" class ="form-control" asp-items="@Model.PriorityList" class="form-control form-select select2"></select>
+                                </div>
+                            </div>
 
-            @if (User.IsInRole(Roles.Admin.ToString()))
-            {
-                <div class="form-group">
-                    <label class="control-label">Project Manager</label>
-                    <select asp-for="PmId" class ="form-control" asp-items="@Model.PMList">
-                        <option></option>
-                    </select>
+                            <!-- Row -->
+                            <div class="row">
+                                <label asp-for="Project.Description" class="col-md-3 form-label mb-4"></label>
+                                <div class="col-md-9 mb-4">
+                                    <textarea asp-for="Project.Description" class="content"></textarea>
+                                    <span asp-validation-for="Project.Description" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <!--End Row-->
+
+                            <!--Row-->
+                            <div class="row">
+                                <label class="col-md-3 form-label mb-4">Project Image</label>
+                                <div class="col-md-6">
+                                    <input asp-for="Project.ImageFormFile" class="form-control" type="file" accept=".png, .jpg, .jpeg, .gif" 
+                                    onchange="document.getElementById('ImageFileData').src = window.URL.createObjectURL(this.files[0])" />
+                                </div>
+                                <div class="col-md-3">
+                                    @if (Model.Project?.ImageFileData != null)
+                                    {
+                                        <img id="ImageFileData" class="img-fluid img-thumbnail" style="width:100px;height:80px;"
+                                        src="data:image/*;base64,@Convert.ToBase64String(Model.Project.ImageFileData)" />
+                                    }
+                                    else
+                                    {
+                                        <img id="ImageFileData" class="img-fluid img-thumbnail" style="width:100px;height:80px;" src="" />
+                                    }
+                                </div>
+                            </div>
+                            <!--End Row-->
+
+                            @if (User.IsInRole(Roles.Admin.ToString()))
+                            {
+                                <div class="row">
+                                    <label class="col-md-3 form-label mb-4">Project Manager</label>
+                                    <div class="col-md-9">
+                                        <select asp-for="PmId" class ="form-control" asp-items="@Model.PMList">
+                                            <option></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="row mt-3">
+                                <div class="col-md-3"></div>
+                                <div class="col-md-9">
+                                    <input type="submit" value="Create" class="btn btn-primary" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            }
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
-        </form>
+        </div>
+        <!-- /ROW-1 CLOSED -->
     </div>
+    <!-- CONTAINER CLOSED -->
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<!--app-content closed-->
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <!-- INTERNAL WYSIWYG Editor JS -->
+    <script src="~/plugins/wysiwyag/jquery.richtext.js "></script>
+    <script src="~/plugins/wysiwyag/wysiwyag.js "></script>
 }

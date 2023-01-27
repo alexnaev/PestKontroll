@@ -4,7 +4,75 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<div class="side-app">
+
+    <!-- CONTAINER -->
+    <div class="main-container container-fluid">
+
+        <!-- ROW-1 OPEN -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Edit Ticket</div>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="Edit" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" asp-for="Id" />
+                            <input type="hidden" asp-for="ProjectId" />
+                            <input type="hidden" asp-for="Created" />
+                            <input type="hidden" asp-for="OwnerUserId" />
+                            <input type="hidden" asp-for="DeveloperUserId" />
+                            <input type="hidden" asp-for="Archived" />
+                            <div class="row mb-4">
+                                <label asp-for="Title" class="col-md-3 form-label"></label>
+                                <div class="col-md-9">
+                                    <input asp-for="Title" class="form-control" />
+                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <label asp-for="TicketTypeId" class="col-md-3 form-label"></label>
+                                <div class="col-md-9">
+                                    <select asp-for="TicketTypeId" asp-items="ViewBag.TicketTypeId" class="form-control form-select select2"></select>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <label asp-for="TicketPriorityId" class="col-md-3 form-label"></label>
+                                <div class="col-md-9">
+                                    <select asp-for="TicketPriorityId" asp-items="ViewBag.TicketPriorityId" class="form-control form-select select2"></select>
+                                </div>
+                            </div>
+
+                            <!-- Row -->
+                            <div class="row">
+                                <label asp-for="Description" class="col-md-3 form-label mb-4"></label>
+                                <div class="col-md-9 mb-4">
+                                    <textarea asp-for="Description" class="content"></textarea>
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <!--End Row-->
+
+                            <div class="row mt-3">
+                                <div class="col-md-3"></div>
+                                <div class="col-md-9">
+                                    <input type="submit" value="Save" class="btn btn-primary" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /ROW-1 CLOSED -->
+    </div>
+    <!-- CONTAINER CLOSED -->
+</div>
+<!--app-content closed-->
+
+@* <h1>Edit</h1>
 
 <h4>Ticket</h4>
 <hr />
@@ -53,8 +121,12 @@
 
 <div>
     <a asp-action="Index">Back to List</a>
-</div>
+</div> *@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <!-- INTERNAL WYSIWYG Editor JS -->
+    <script src="~/plugins/wysiwyag/jquery.richtext.js "></script>
+    <script src="~/plugins/wysiwyag/wysiwyag.js "></script>
 }
