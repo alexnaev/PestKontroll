@@ -5,105 +5,143 @@
     ViewData["Title"] = "My Projects";
 }
 
-<h1>My Projects</h1>
-
-@if (User.IsInRole(nameof(Roles.Admin)) || User.IsInRole(nameof(Roles.ProjectManager)))
-{
-    <p>
-        <a asp-action="Create">Create New Project</a>
-    </p>
-}
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageFileName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageFileData)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageConentType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Archived)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Company)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProjectPriority)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageFileName)
-            </td>
-            <td>
-                @if (item.ImageFileData != null)
+<!-- Row -->
+<div class="row row-sm">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">My Projects</h3>
+            </div>
+            <div class="card-body">
+                @if (User.IsInRole(nameof(Roles.Admin)) || User.IsInRole(nameof(Roles.ProjectManager)))
                 {
-                <img id="ImageFileData" class="img-fluid img-thumbnail" style="width:100px;height:80px;"
-                src="data:image/*;base64,@Convert.ToBase64String(item.ImageFileData)" />
+                    <p>
+                        <a asp-action="Create">Create New Project</a>
+                    </p>
                 }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageConentType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Archived)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Company.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProjectPriority.Name)
-            </td>
-            <td>
-                    <a asp-action="Details" asp-route-id="@item.id">Details</a>
+                <div class="table-responsive">
+                    <table id="example2" class="table border-bottom">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Project Name
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.StartDate)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.EndDate)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Archived)
+                                </th>
+                                <th>
+                                    Project Priority
+                                </th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model) 
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex">
+                                            @if (item.ImageFileData != null)
+                                            {
+                                                <span class="avatar bradius"
+                                                    style="background-image: url(data:image/*;base64,@Convert.ToBase64String(item.ImageFileData))"></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="avatar bradius"
+                                                    style="background-image: url(../assets/images/orders/10.jpg)"></span>
+                                            }
+                                            <div
+                                                class="ms-3 mt-0 mt-sm-2 d-block">
+                                                <h6
+                                                    class="mb-0 fs-14 fw-semibold">
+                                                    @Html.DisplayFor(modelItem => item.Name)</h6>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.StartDate)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.EndDate)
+                                    </td>
+                                    <td>
+                                        @if (item.Archived)
+                                        {
+                                            <span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">
+                                                Archived
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">
+                                                Not Archived
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.ProjectPriority?.Name == "Low")
+                                        {
+                                            <span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">
+                                                @item.ProjectPriority?.Name
+                                            </span>
+                                        }
+                                        else if(item.ProjectPriority?.Name == "Medium")
+                                        {
+                                            <span class="badge bg-primary-transparent rounded-pill text-primary p-2 px-3">
+                                                @item.ProjectPriority?.Name
+                                            </span>
+                                        }
+                                        else if(item.ProjectPriority?.Name == "High")
+                                        {
+                                            <span class="badge bg-warning-transparent rounded-pill text-warning p-2 px-3">
+                                                @item.ProjectPriority?.Name
+                                            </span>
+                                        }
+                                        else if (item.ProjectPriority?.Name == "Urgent")
+                                        {
+                                            <span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">
+                                                @item.ProjectPriority?.Name
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a asp-action="Details" asp-route-id="@item.id" class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Details"><span class="fe fe-file-text fs-14"></span></a>
 
-                    @if (User.IsInRole(nameof(Roles.Admin)) || User.IsInRole(nameof(Roles.ProjectManager)))
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.id">Edit</a>
-                        @if (item.Archived)
-                        {
-                            <a asp-action="Restore" asp-route-id="@item.id">Restore</a>
-                        }
-                        else
-                        {
-                            <a asp-action="Archive" asp-route-id="@item.id">Archive</a>
-                        }
-                    }
-                </td>
-        </tr>
+                                        @if (User.IsInRole(nameof(Roles.Admin)) || User.IsInRole(nameof(Roles.ProjectManager)))
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@item.id" class="btn text-warning btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                            @if (item.Archived)
+                                            {
+                                                <a asp-action="Restore" asp-route-id="@item.id" class="btn text-success btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Restore"><span class="bi-archive fs-14"></span></a>
+                                            }
+                                            else
+                                            {
+                                                <a asp-action="Archive" asp-route-id="@item.id" class="btn text-danger btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Archive"><span class="bi-archive fs-14"></span></a>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Row -->
+
+@section Scripts{
+    <!-- DATA TABLE JS-->
+    <script src="~/plugins/datatable/js/dataTables.buttons.min.js"></script>
+    <script src="~/plugins/datatable/js/buttons.bootstrap5.min.js"></script>
+    <script src="~/plugins/datatable/responsive.bootstrap5.min.js"></script>
+    <script src="~/js/table-data.js"></script>
 }
-    </tbody>
-</table>

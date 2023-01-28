@@ -4,7 +4,129 @@
     ViewData["Title"] = "Unassigned Projects";
 }
 
-<h1>Unassigned Projects</h1>
+<!-- Row -->
+<div class="row row-sm">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Unassigned Projects</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="example2" class="table border-bottom">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Project Name
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.StartDate)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.EndDate)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Archived)
+                                </th>
+                                <th>
+                                    Project Priority
+                                </th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model) 
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex">
+                                            @if (item.ImageFileData != null)
+                                            {
+                                                <span class="avatar bradius"
+                                                    style="background-image: url(data:image/*;base64,@Convert.ToBase64String(item.ImageFileData))"></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="avatar bradius"
+                                                    style="background-image: url(../assets/images/orders/10.jpg)"></span>
+                                            }
+                                            <div
+                                                class="ms-3 mt-0 mt-sm-2 d-block">
+                                                <h6
+                                                    class="mb-0 fs-14 fw-semibold">
+                                                    @Html.DisplayFor(modelItem => item.Name)</h6>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.StartDate)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.EndDate)
+                                    </td>
+                                    <td>
+                                        @if (item.Archived)
+                                        {
+                                            <span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">
+                                                Archived
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">
+                                                Not Archived
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.ProjectPriority?.Name == "Low")
+                                        {
+                                            <span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">
+                                                @item.ProjectPriority?.Name
+                                            </span>
+                                        }
+                                        else if(item.ProjectPriority?.Name == "Medium")
+                                        {
+                                            <span class="badge bg-primary-transparent rounded-pill text-primary p-2 px-3">
+                                                @item.ProjectPriority?.Name
+                                            </span>
+                                        }
+                                        else if(item.ProjectPriority?.Name == "High")
+                                        {
+                                            <span class="badge bg-warning-transparent rounded-pill text-warning p-2 px-3">
+                                                @item.ProjectPriority?.Name
+                                            </span>
+                                        }
+                                        else if (item.ProjectPriority?.Name == "Urgent")
+                                        {
+                                            <span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">
+                                                @item.ProjectPriority?.Name
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a asp-action="AssignPM" asp-route-id="@item.id" class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Assign PM"><span class="fe fe-user-check fs-14"></span></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Row -->
+
+@section Scripts{
+    <!-- DATA TABLE JS-->
+    <script src="~/plugins/datatable/js/dataTables.buttons.min.js"></script>
+    <script src="~/plugins/datatable/js/buttons.bootstrap5.min.js"></script>
+    <script src="~/plugins/datatable/responsive.bootstrap5.min.js"></script>
+    <script src="~/js/table-data.js"></script>
+}
+
+@* <h1>Unassigned Projects</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -70,4 +192,4 @@
         </tr>
 }
     </tbody>
-</table>
+</table> *@
