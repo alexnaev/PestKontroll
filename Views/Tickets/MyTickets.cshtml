@@ -4,91 +4,168 @@
     ViewData["Title"] = "My Tickets";
 }
 
-<h1>My Tickets</h1>
+<!-- Row -->
+<div class="row row-sm">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">My Tickets</h3>
+            </div>
+            <div class="card-body">
+                <p>
+                    <a asp-action="Create">Create New Ticket</a>
+                </p>
+                <div class="table-responsive">
+                    <table id="example2" class="table border-bottom">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Ticket Title
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Created)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Updated)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Archived)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Project)
+                                </th>
+                                <th>
+                                    Ticket Type
+                                </th>
+                                <th>
+                                    Ticket Priority
+                                </th>
+                                <th>
+                                    Ticket Status
+                                </th>
+                                <th>
+                                    Ticket Owner
+                                </th>
+                                <th>
+                                    Developer
+                                </th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model) 
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="ms-3 mt-0 mt-sm-2 d-block">
+                                            <h6 class="mb-0 fs-14 fw-semibold">
+                                                @Html.DisplayFor(modelItem => item.Title)</h6>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Created)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Updated)
+                                    </td>
+                                    <td>
+                                        @if (item.Archived)
+                                        {
+                                            <span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">
+                                                Archived
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">
+                                                Not Archived
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Project.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.TicketType.Name)
+                                    </td>
+                                    <td>
+                                        @if (item.TicketPriority.Name == "Low")
+                                        {
+                                            <span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">
+                                                @item.TicketPriority.Name
+                                            </span>
+                                        }
+                                        else if(item.TicketPriority.Name == "Medium")
+                                        {
+                                            <span class="badge bg-primary-transparent rounded-pill text-primary p-2 px-3">
+                                                @item.TicketPriority.Name
+                                            </span>
+                                        }
+                                        else if(item.TicketPriority.Name == "High")
+                                        {
+                                            <span class="badge bg-warning-transparent rounded-pill text-warning p-2 px-3">
+                                                @item.TicketPriority.Name
+                                            </span>
+                                        }
+                                        else if (item.TicketPriority.Name == "Urgent")
+                                        {
+                                            <span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">
+                                                @item.TicketPriority.Name
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.TicketStatus.Name == "New")
+                                        {
+                                            <span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">
+                                                @item.TicketStatus.Name
+                                            </span>
+                                        }
+                                        else if(item.TicketStatus.Name == "Development")
+                                        {
+                                            <span class="badge bg-warning-transparent rounded-pill text-warning p-2 px-3">
+                                                @item.TicketStatus.Name
+                                            </span>
+                                        }
+                                        else if(item.TicketStatus.Name == "Testing")
+                                        {
+                                            <span class="badge bg-primary-transparent rounded-pill text-primary p-2 px-3">
+                                                @item.TicketStatus.Name
+                                            </span>
+                                        }
+                                        else if (item.TicketStatus.Name == "Resolved")
+                                        {
+                                            <span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">
+                                                @item.TicketStatus.Name
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.OwnerUser.FullName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DeveloperUser.FullName)
+                                    </td>
+                                    <td>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Details"><span class="fe fe-file-text fs-14"></span></a>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Created)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Updated)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Archived)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Project)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TicketType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TicketPriority)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TicketStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OwnerUser)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeveloperUser)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Created)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Updated)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Archived)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Project.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TicketType.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TicketPriority.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TicketStatus.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OwnerUser.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeveloperUser.FullName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-            </td>
-        </tr>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn text-warning btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Row -->
+
+@section Scripts{
+    <!-- DATA TABLE JS-->
+    <script src="~/plugins/datatable/js/dataTables.buttons.min.js"></script>
+    <script src="~/plugins/datatable/js/buttons.bootstrap5.min.js"></script>
+    <script src="~/plugins/datatable/responsive.bootstrap5.min.js"></script>
+    <script src="~/js/table-data.js"></script>
 }
-    </tbody>
-</table>
