@@ -58,22 +58,10 @@
                             <!--End Row-->
 
                             <!--Row-->
-                            <div class="row">
+                            <div class="row mb-4">
                                 <label class="col-md-3 form-label mb-4">Project Image</label>
-                                <div class="col-md-6">
-                                    <input asp-for="Project.ImageFormFile" class="form-control" type="file" accept=".png, .jpg, .jpeg, .gif" 
-                                    onchange="document.getElementById('ImageFileData').src = window.URL.createObjectURL(this.files[0])" />
-                                </div>
-                                <div class="col-md-3">
-                                    @if (Model.Project?.ImageFileData != null)
-                                    {
-                                        <img id="ImageFileData" class="img-fluid img-thumbnail" style="width:100px;height:80px;"
-                                        src="data:image/*;base64,@Convert.ToBase64String(Model.Project.ImageFileData)" />
-                                    }
-                                    else
-                                    {
-                                        <img id="ImageFileData" class="img-fluid img-thumbnail" style="width:100px;height:80px;" src="" />
-                                    }
+                                <div class="col-md-9">
+                                    <input asp-for="Project.ImageFormFile" type="file" class="dropify" accept=".png, .jpg, .jpeg, .gif" data-bs-height="180" />
                                 </div>
                             </div>
                             <!--End Row-->
@@ -113,4 +101,8 @@
     <!-- INTERNAL WYSIWYG Editor JS -->
     <script src="~/plugins/wysiwyag/jquery.richtext.js "></script>
     <script src="~/plugins/wysiwyag/wysiwyag.js "></script>
+
+    <!-- FILE UPLOADES JS -->
+    <script src="~/plugins/fileuploads/js/fileupload.js"></script>
+    <script src="~/plugins/fileuploads/js/file-upload.js"></script>
 }
