@@ -1,10 +1,107 @@
 ﻿@model PestKontroll.Models.Company
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<PKUser> UserManager
 
 @{
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<div class="side-app">
+
+    <!-- CONTAINER -->
+    <div class="main-container container-fluid">
+        <div class="container">
+
+            <!-- ROW-1 OPEN-->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="row py-5">
+                        <div class="text-center">
+                            <h4 class="display-5 fw-semibold">@Model.Name</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ROW-1 CLOSED -->
+
+            <!-- ROW-3 OPEN -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card mt-7">
+                        <div class="card-body p-5 text-dark">
+                            <div class="statistics-info p-4">
+                                <div class="row">
+                                    <div class="col-xl-6">
+                                        <div class="">
+                                            <h2 class="fw-bold">We Help to <span class="text-primary">Build</span> Your Dream Project.</h2>
+                                            <h4 class="leading-normal">majority have suffered alteration in some form, by injected humour</h4>
+                                            <p>@Model.Description</p>
+                                            <p>All the Lorem Ipsum generators on the Internet tend to repeat Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>
+                                            <p> If you are going to use a passage of Lorem Ipsum, you need to as necessary All the Lorem Ipsum generators on the Internet tend to repeat Various versions have evolved over the years, sometimes by
+                                                accident, sometimes on purpose (injected humour and the like).</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6">
+                                        <div class="text-center">
+                                            <img src="~/img/PestKontroll-logo.png" alt="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ROW-3 CLOSED -->
+
+            <!-- ROW-5 OPEN-->
+            <div class="row mt-5">
+                <div class="text-center">
+                    <h2 class="fw-semibold mb-2">Meet our creative minds</h2>
+                    <h5>Our Members</h5>
+                </div>
+                @foreach (PKUser member in Model.Members)
+                {
+                    <!-- COL-OPEN -->
+                    <div class="col-xl-3 col-md-6 col-lg-6 mt-3">
+                        <div class="card">
+                            <div class="card-body text-center px-3">
+                                @if (member.AvatarFileData != null)
+                                {
+                                    <span class="avatar avatar-xxl bradius cover-image" data-bs-image-src="data:image/*;base64,@(Convert.ToBase64String(member.AvatarFileData))"></span>
+                                }
+                                else
+                                {
+                                    <span class="avatar avatar-xxl bradius cover-image" data-bs-image-src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png"></span>
+                                }
+                                
+                                <h4 class="h4 mb-0 mt-3">@member.FullName</h4>
+                                <p class="card-text">@((await UserManager.GetRolesAsync(member)).FirstOrDefault())</p>
+                                <p>@member.Email</p>
+                                <div class="row user-social-detail text-center">
+                                    <a href="https://www.google.com/" target="_blank" class="social-profile me-4 rounded text-center bg-secondary-transparent">
+                                        <i class="fa fa-google text-secondary"></i>
+                                    </a>
+                                    <a href="https://www.facebook.com/" target="_blank" class="social-profile me-4 rounded text-center bg-danger-transparent">
+                                        <i class="fa fa-facebook text-danger"></i>
+                                    </a>
+                                    <a href="https://www.twitter.com/" target="_blank" class="social-profile rounded text-center bg-success-transparent">
+                                        <i class="fa fa-twitter text-success"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- COL-END -->
+                }
+            </div>
+            <!-- ROW-5 CLOSED -->
+        </div>
+    </div>
+</div>
+
+@* <h1>Details</h1>
 
 <div>
     <h4>Company</h4>
@@ -27,4 +124,4 @@
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
-</div>
+</div> *@

@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PestKontroll.Data;
 using PestKontroll.Models;
+using PestKontroll.Services.Interfaces;
 
 namespace PestKontroll.Controllers
 {
     public class CompaniesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IPKCompanyInfoService _companyInfoService;
 
-        public CompaniesController(ApplicationDbContext context)
+        public CompaniesController(ApplicationDbContext context, IPKCompanyInfoService companyInfoService)
         {
             _context = context;
+            _companyInfoService = companyInfoService;
         }
 
         // GET: Companies
@@ -33,8 +36,11 @@ namespace PestKontroll.Controllers
                 return NotFound();
             }
 
-            var company = await _context.Companies
-                .FirstOrDefaultAsync(m => m.Id == id);
+            // var company = await _context.Companies
+            //     .FirstOrDefaultAsync(m => m.Id == id);
+
+            Company company = await _companyInfoService.GetCompanyByIdAsync(id);
+            
             if (company == null)
             {
                 return NotFound();
