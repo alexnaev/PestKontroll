@@ -141,12 +141,25 @@
                                         class="side-menu__label">Projects</span><i
                                         class="angle fe fe-chevron-right"></i></a>
                                 <ul class="slide-menu">
-                                    <li class="side-menu-label1"><a href="javascript:void(0)">Apps</a></li>
-                                    <li><a asp-area="" asp-controller="Projects" asp-action="Create" class="slide-item"> New Project</a></li>
-                                    <li><a asp-area="" asp-controller="Projects" asp-action="MyProjects" class="slide-item"> My Projects</a></li>
+
+                                    @if (User.IsInRole(nameof(Roles.Admin)) || User.IsInRole(nameof(Roles.ProjectManager)))
+                                    {
+                                        <li><a asp-area="" asp-controller="Projects" asp-action="Create" class="slide-item"> New Project</a></li>
+                                    }
+
+                                    @if (!User.IsInRole(nameof(Roles.Admin)))
+                                    {
+                                        <li><a asp-area="" asp-controller="Projects" asp-action="MyProjects" class="slide-item"> My Projects</a></li>
+                                    }
+                                    
                                     <li><a asp-area="" asp-controller="Projects" asp-action="AllProjects" class="slide-item"> All Projects</a></li>
                                     <li><a asp-area="" asp-controller="Projects" asp-action="ArchivedProjects" class="slide-item"> Archived Projects</a></li>
-                                    <li><a asp-area="" asp-controller="Projects" asp-action="UnassignedProjects" class="slide-item"> Unassigned Projects</a></li>
+
+                                    @if (User.IsInRole(nameof(Roles.Admin)))
+                                    {
+                                        <li><a asp-area="" asp-controller="Projects" asp-action="UnassignedProjects" class="slide-item"> Unassigned Projects</a></li>
+                                    }
+
                                 </ul>
                             </li>
                             <li class="slide">
@@ -160,10 +173,20 @@
                                         <div class="">
                                             <ul>
                                                 <li><a asp-area="" asp-controller="Tickets" asp-action="Create" class="slide-item"> New Ticket</a></li>
-                                                <li><a asp-area="" asp-controller="Tickets" asp-action="MyTickets" class="slide-item"> My Tickets</a></li>
+
+                                                @if (!User.IsInRole(nameof(Roles.Admin)))
+                                                {
+                                                    <li><a asp-area="" asp-controller="Tickets" asp-action="MyTickets" class="slide-item"> My Tickets</a></li>
+                                                }
+
                                                 <li><a asp-area="" asp-controller="Tickets" asp-action="AllTickets" class="slide-item"> All Tickets</a></li>
                                                 <li><a asp-area="" asp-controller="Tickets" asp-action="ArchivedTickets" class="slide-item"> Archived Tickets</a></li>
-                                                <li><a asp-area="" asp-controller="Tickets" asp-action="UnassignedTickets" class="slide-item"> Unassigned Tickets</a></li>
+
+                                                @if (User.IsInRole(nameof(Roles.Admin)) || User.IsInRole(nameof(Roles.ProjectManager)))
+                                                {
+                                                    <li><a asp-area="" asp-controller="Tickets" asp-action="UnassignedTickets" class="slide-item"> Unassigned Tickets</a></li>
+                                                }
+                                                
                                             </ul>
                                         </div>
                                     </div>
