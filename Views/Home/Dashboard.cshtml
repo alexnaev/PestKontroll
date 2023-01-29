@@ -142,19 +142,11 @@
 		<!-- ROW-2 -->
 		<div class="row">
 			<div class="col-sm-12 col-md-12 col-lg-12 col-xl-9">
-				<div class="card">
-					<div class="card-header">
-						<h3 class="card-title">Sales Analytics</h3>
-					</div>
+				<div class="card overflow-hidden">
 					<div class="card-body">
-						<div class="d-flex mx-auto text-center justify-content-center mb-4">
-							<div class="d-flex text-center justify-content-center me-3"><span
-									class="dot-label bg-primary my-auto"></span>Total Sales</div>
-							<div class="d-flex text-center justify-content-center"><span
-									class="dot-label bg-secondary my-auto"></span>Total Orders</div>
-						</div>
+						<h3 class="card-title">Projects/Tickets By Priority</h3>
 						<div class="chartjs-wrapper-demo">
-							<canvas id="transactions" class="chart-dropshadow"></canvas>
+							<canvas id="chartBar2" class="chart-dropshadow"></canvas>
 						</div>
 					</div>
 				</div>
@@ -162,40 +154,10 @@
 			<!-- COL END -->
 			<div class="col-sm-12 col-md-12 col-lg-12 col-xl-3">
 				<div class="card overflow-hidden">
-					<div class="card-body pb-0 bg-recentorder">
-						<h3 class="card-title text-white">Recent Orders</h3>
-						<div class="chartjs-wrapper-demo">
-							<canvas id="recentorders" class="chart-dropshadow"></canvas>
-						</div>
-					</div>
-					<div id="flotback-chart" class="flot-background"></div>
 					<div class="card-body">
-						<div class="d-flex mb-4 mt-3">
-							<div
-								class="avatar avatar-md bg-secondary-transparent text-secondary bradius me-3">
-								<i class="fe fe-check"></i>
-							</div>
-							<div class="">
-								<h6 class="mb-1 fw-semibold">Delivered Orders</h6>
-								<p class="fw-normal fs-12"> <span class="text-success">3.5%</span>
-									increased </p>
-							</div>
-							<div class=" ms-auto my-auto">
-								<p class="fw-bold fs-20"> 1,768 </p>
-							</div>
-						</div>
-						<div class="d-flex">
-							<div class="avatar  avatar-md bg-pink-transparent text-pink bradius me-3">
-								<i class="fe fe-x"></i>
-							</div>
-							<div class="">
-								<h6 class="mb-1 fw-semibold">Cancelled Orders</h6>
-								<p class="fw-normal fs-12"> <span class="text-success">1.2%</span>
-									increased </p>
-							</div>
-							<div class=" ms-auto my-auto">
-								<p class="fw-bold fs-20 mb-0"> 3,675 </p>
-							</div>
+						<h3 class="card-title">Tickets By Status</h3>
+						<div class="chartjs-wrapper-demo">
+							<canvas id="chartPie" class="chart-dropshadow"></canvas>
 						</div>
 					</div>
 				</div>
@@ -595,7 +557,7 @@
 		</div>
 	</div>
 </div>
-@section scripts{
+@section Scripts{
 <script>
     $(document).ready( function () {
         $('#projects-table').DataTable();
@@ -606,212 +568,106 @@
     } );
 </script>
 	<!-- *** Begin Chart JS Pie/Donut *** -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.0/dist/chart.min.js"></script>
-	<script>
-		var projectsTicketsData = [];
-		var projectsTicketsLabels = [];
-	</script>
-	@foreach (var project in Model.Projects)
-	{
-		<script>
-			projectsTicketsData.push(@project.Tickets.Count());
-			projectsTicketsLabels.push('@project.Name');
-		</script>
-	}
+@* <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.0/dist/chart.min.js"></script> *@
 <script>
-
-	var donutChartCanvas = $('#donutChart').get(0).getContext('2d');
-	var donutData = {
-			labels: [
-				'@nameof(PKTicketStatus.New)',
-				'@nameof(PKTicketStatus.Development)',
-				'@nameof(PKTicketStatus.Testing)',
-				'@nameof(PKTicketStatus.Resolved)'
-		],
-		datasets: [
-			{
-				data: [
-					@Model.Tickets.Where(t=> t.TicketStatus.Name ==nameof(PKTicketStatus.New)).Count(),
-					@Model.Tickets.Where(t=> t.TicketStatus.Name == nameof(PKTicketStatus.Development)).Count(),
-					@Model.Tickets.Where(t=> t.TicketStatus.Name ==nameof(PKTicketStatus.Testing)).Count(),
-					@Model.Tickets.Where(t=> t.TicketStatus.Name ==nameof(PKTicketStatus.Resolved)).Count()
-				],
-				backgroundColor: [
-					'rgba(255, 99, 132, 0.2)',
-					'rgba(255, 206, 86, 0.2)',
-					'rgba(54, 162, 235, 0.2)',
-					'rgba(75, 192, 192, 0.2)'
-				],
-				borderColor: [
-					'rgba(255, 99, 132, 1)',
-					'rgba(255, 206, 86, 1)',
-					'rgba(54, 162, 235, 1)',
-					'rgba(75, 192, 192, 1)'
-				]
-			}
-		]
-	};
-
-		var donutOptions = {
-			maintainAspectRatio: false,
-			responsive: true,
-		};
-		//Create pie or douhnut chart
-		// You can switch between pie and douhnut using the method below.
-		new Chart(donutChartCanvas, {
-			type: 'doughnut',
-			data: donutData,
-			options: donutOptions
-		});
-
-		//Project Tickets Count
-		var projectTicketsChartCanvas = $('#projectTicketsCount').get(0).getContext('2d');
-		var projectTicketsData = {
-			labels: projectsTicketsLabels,
-			datasets: [
-				{
-					data: projectsTicketsData,
-					backgroundColor: [
-						'rgba(255, 206, 86, 0.2)',
-						'rgba(54, 162, 235, 0.2)',
-						'rgba(75, 192, 192, 0.2)'
-					],
-					borderColor: [
-						'rgba(255, 206, 86, 1)',
-						'rgba(54, 162, 235, 1)',
-						'rgba(75, 192, 192, 1)'
-					]
-				}
-			]
-		};
-
-		var projectTicketsOptions = {
-			maintainAspectRatio: false,
-			responsive: true,
-		};
-		//Create pie or douhnut chart
-		// You can switch between pie and douhnut using the method below.
-		new Chart(projectTicketsChartCanvas, {
-			type: 'doughnut',
-			data: projectTicketsData,
-			options: projectTicketsOptions
-		});
-
-		//Projects By Priority
-		var projectsByPriChartCanvas = $('#projectsByPri').get(0).getContext('2d');
-		var projectsByPriData = {
-			labels: [
-				'@nameof(PKProjectPriority.Low)',
-				'@nameof(PKProjectPriority.Medium)',
-				'@nameof(PKProjectPriority.High)',
-				'@nameof(PKProjectPriority.Urgent)'
+	/* Doughbut Chart*/
+	var datapie = {
+        labels: ['New', 'Dev', 'Test', 'Resolved'],
+        datasets: [{
+            data: [
+				@Model.Tickets.Where(t=> t.TicketStatus.Name ==nameof(PKTicketStatus.New)).Count(),
+				@Model.Tickets.Where(t=> t.TicketStatus.Name == nameof(PKTicketStatus.Development)).Count(),
+				@Model.Tickets.Where(t=> t.TicketStatus.Name ==nameof(PKTicketStatus.Testing)).Count(),
+				@Model.Tickets.Where(t=> t.TicketStatus.Name ==nameof(PKTicketStatus.Resolved)).Count()
 			],
-			datasets: [
-				{
-					data: [
-							@Model.Projects.Where(p=> p.ProjectPriority.Name == nameof(PKProjectPriority.Low)).Count(),
-							@Model.Projects.Where(p=> p.ProjectPriority.Name == nameof(PKProjectPriority.Medium)).Count(),
-							@Model.Projects.Where(p=> p.ProjectPriority.Name == nameof(PKProjectPriority.High)).Count(),
-							@Model.Projects.Where(p=> p.ProjectPriority.Name == nameof(PKProjectPriority.Urgent)).Count(),
-					],
-					backgroundColor: [
-						'rgba(75, 192, 192, 0.2)',
-						'rgba(54, 162, 235, 0.2)',
-						'rgba(255, 206, 86, 0.2)',
-						'rgba(255, 99, 132, 0.2)',
-					],
-					borderColor: [
-						'rgba(75, 192, 192, 1)',
-						'rgba(54, 162, 235, 1)',
-						'rgba(255, 206, 86, 1)',
-						'rgba(255, 99, 132, 1)',
-					]
-				}
-			]
-		};
-
-		var projectsByPriOptions = {
-			maintainAspectRatio: false,
-			responsive: true,
-		};
-		//Create pie or douhnut chart
-		// You can switch between pie and douhnut using the method below.
-		new Chart(projectsByPriChartCanvas, {
-			type: 'pie',
-			data: projectsByPriData,
-			options: projectsByPriOptions
-		});
-
-		//Ticket By Priority
-		var ticketPriorityChartCanvas = $('#ticketPriority').get(0).getContext('2d');
-		var ticketPriorityData = {
-			labels: [
-				'@nameof(PKTicketPriority.Low)',
-				'@nameof(PKTicketPriority.Medium)',
-				'@nameof(PKTicketPriority.High)',
-				'@nameof(PKTicketPriority.Urgent)'
+            backgroundColor: [
+				'rgba(255, 99, 132, 0.4)',
+				'rgba(255, 206, 86, 0.4)',
+				'rgba(54, 162, 235, 0.4)',
+				'rgba(75, 192, 192, 0.4)'
 			],
-			datasets: [
-				{
-					data: [
-							@Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(PKTicketPriority.Low)).Count(),
-							@Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(PKTicketPriority.Medium)).Count(),
-							@Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(PKTicketPriority.High)).Count(),
-							@Model.Tickets.Where(t=>t.TicketPriority.Name == nameof(PKTicketPriority.Urgent)).Count(),
-					],
-					backgroundColor: [
-						'rgba(75, 192, 192, 0.2)',
-						'rgba(54, 162, 235, 0.2)',
-						'rgba(255, 206, 86, 0.2)',
-						'rgba(255, 99, 132, 0.2)',
-					],
-					borderColor: [
-						'rgba(75, 192, 192, 1)',
-						'rgba(54, 162, 235, 1)',
-						'rgba(255, 206, 86, 1)',
-						'rgba(255, 99, 132, 1)',
-					]
-				}
+			borderColor: [
+				'rgba(255, 99, 132, 1)',
+				'rgba(255, 206, 86, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(75, 192, 192, 1)'
 			]
-		};
+        }]
+    };
 
-		var ticketPriorityOptions = {
-			maintainAspectRatio: false,
-			responsive: true,
-		};
-		//Create pie or douhnut chart
-		// You can switch between pie and douhnut using the method below.
-		new Chart(ticketPriorityChartCanvas, {
-			type: 'pie',
-			data: ticketPriorityData,
-			options: ticketPriorityOptions
-		});
+    var optionpie = {
+        maintainAspectRatio: false,
+        responsive: true,
+        legend: {
+            display: true,
+        },
+        animation: {
+            animateScale: true,
+            animateRotate: true
+        }
+    };
+	
+    var ctx6 = document.getElementById('chartPie');
+	ctx6.height = "330"
+    var myPieChart6 = new Chart(ctx6, {
+        type: 'doughnut',
+        data: datapie,
+        options: optionpie
+    });
+
+    /* Bar-Chart2*/
+    var ctx = document.getElementById("chartBar2");
+	ctx.height = "330";
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ["Low", "Medium", "High", "Urgent"],
+            datasets: [{
+                label: 'Projects',
+                data: [@Model.Projects.Where(p => p.ProjectPriority.Name == "Low").Count(), @Model.Projects.Where(p => p.ProjectPriority.Name == "Medium").Count(), @Model.Projects.Where(p => p.ProjectPriority.Name == "High").Count(), @Model.Projects.Where(p => p.ProjectPriority.Name == "Urgent").Count()],
+                borderColor: "#6c5ffc",
+                borderWidth: "0",
+                backgroundColor: "#6c5ffc"
+            }, {
+                label: 'Tickets',
+                data: [@Model.Tickets.Where(p => p.TicketPriority.Name == "Low").Count(), @Model.Tickets.Where(p => p.TicketPriority.Name == "Medium").Count(), @Model.Tickets.Where(p => p.TicketPriority.Name == "High").Count(), @Model.Tickets.Where(p => p.TicketPriority.Name == "Urgent").Count()],
+                borderColor: "#05c3fb",
+                borderWidth: "0",
+                backgroundColor: "#05c3fb"
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                xAxes: [{
+                    barPercentage: 0.4,
+                    barValueSpacing: 0,
+                    barDatasetSpacing: 0,
+                    barRadius: 0,
+                    ticks: {
+                        fontColor: "#9ba6b5",
+                    },
+                    gridLines: {
+                        color: 'rgba(119, 119, 142, 0.2)'
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        fontColor: "#9ba6b5",
+                    },
+                    gridLines: {
+                        color: 'rgba(119, 119, 142, 0.2)'
+                    },
+                }]
+            },
+            legend: {
+                labels: {
+                    fontColor: "#9ba6b5"
+                },
+            },
+        }
+    });
 </script>
-<!-- *** End Chart JS Donut *** -->
-
-<!--  Plotly Charts  -->
-<!-- Load plotly.js into the DOM -->
-<script src='https://cdn.plot.ly/plotly-2.4.2.min.js'></script>
-@*<script>
-	$.ajax({
-		type: "POST",
-		url: "/Home/PlotlyBarChart",
-		data: '{}',
-		contentType: "application/json; charset=utf-8",
-		dataType: "json",
-		success: function (result) {
-			var data = result;
-
-			var layout = {barmode: 'group'};
-
-			Plotly.newPlot('plotlyChart', data, layout);
-			},
-			failure: function (result) {
-				alert(result.d);
-			},
-			error: function (result) {
-				alert(result.d);
-			}
-		});
-</script>
-*@}
+}
