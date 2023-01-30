@@ -4,163 +4,165 @@
     ViewData["Title"] = "My Tickets";
 }
 
-<!-- Row -->
-<div class="row row-sm">
-    <div class="col-lg-12">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">My Tickets</h3>
-            </div>
-            <div class="card-body">
-                <p>
-                    <a asp-action="Create">Create New Ticket</a>
-                </p>
-                <div class="table-responsive">
-                    <table id="example2" class="table border-bottom">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Ticket Title
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Created)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Updated)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Archived)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Project)
-                                </th>
-                                <th>
-                                    Ticket Type
-                                </th>
-                                <th>
-                                    Ticket Priority
-                                </th>
-                                <th>
-                                    Ticket Status
-                                </th>
-                                <th>
-                                    Ticket Owner
-                                </th>
-                                <th>
-                                    Developer
-                                </th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model) 
-                            {
+<div class="main-content app-content mt-0">
+    <!-- Row -->
+    <div class="row row-sm">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">My Tickets</h3>
+                </div>
+                <div class="card-body">
+                    <p>
+                        <a asp-action="Create">Create New Ticket</a>
+                    </p>
+                    <div class="table-responsive">
+                        <table id="example2" class="table border-bottom">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <div class="ms-3 mt-0 mt-sm-2 d-block">
-                                            <h6 class="mb-0 fs-14 fw-semibold">
-                                                @Html.DisplayFor(modelItem => item.Title)</h6>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Created)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Updated)
-                                    </td>
-                                    <td>
-                                        @if (item.Archived)
-                                        {
-                                            <span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">
-                                                Archived
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">
-                                                Not Archived
-                                            </span>
-                                        }
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Project.Name)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.TicketType.Name)
-                                    </td>
-                                    <td>
-                                        @if (item.TicketPriority.Name == "Low")
-                                        {
-                                            <span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">
-                                                @item.TicketPriority.Name
-                                            </span>
-                                        }
-                                        else if(item.TicketPriority.Name == "Medium")
-                                        {
-                                            <span class="badge bg-primary-transparent rounded-pill text-primary p-2 px-3">
-                                                @item.TicketPriority.Name
-                                            </span>
-                                        }
-                                        else if(item.TicketPriority.Name == "High")
-                                        {
-                                            <span class="badge bg-warning-transparent rounded-pill text-warning p-2 px-3">
-                                                @item.TicketPriority.Name
-                                            </span>
-                                        }
-                                        else if (item.TicketPriority.Name == "Urgent")
-                                        {
-                                            <span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">
-                                                @item.TicketPriority.Name
-                                            </span>
-                                        }
-                                    </td>
-                                    <td>
-                                        @if (item.TicketStatus.Name == "New")
-                                        {
-                                            <span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">
-                                                @item.TicketStatus.Name
-                                            </span>
-                                        }
-                                        else if(item.TicketStatus.Name == "Development")
-                                        {
-                                            <span class="badge bg-warning-transparent rounded-pill text-warning p-2 px-3">
-                                                @item.TicketStatus.Name
-                                            </span>
-                                        }
-                                        else if(item.TicketStatus.Name == "Testing")
-                                        {
-                                            <span class="badge bg-primary-transparent rounded-pill text-primary p-2 px-3">
-                                                @item.TicketStatus.Name
-                                            </span>
-                                        }
-                                        else if (item.TicketStatus.Name == "Resolved")
-                                        {
-                                            <span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">
-                                                @item.TicketStatus.Name
-                                            </span>
-                                        }
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.OwnerUser.FullName)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.DeveloperUser.FullName)
-                                    </td>
-                                    <td>
-                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Details"><span class="fe fe-file-text fs-14"></span></a>
-
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn text-warning btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
-                                    </td>
+                                    <th>
+                                        Ticket Title
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Created)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Updated)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Archived)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Project)
+                                    </th>
+                                    <th>
+                                        Ticket Type
+                                    </th>
+                                    <th>
+                                        Ticket Priority
+                                    </th>
+                                    <th>
+                                        Ticket Status
+                                    </th>
+                                    <th>
+                                        Ticket Owner
+                                    </th>
+                                    <th>
+                                        Developer
+                                    </th>
+                                    <th>Action</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model) 
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="ms-3 mt-0 mt-sm-2 d-block">
+                                                <h6 class="mb-0 fs-14 fw-semibold">
+                                                    @Html.DisplayFor(modelItem => item.Title)</h6>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Created)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Updated)
+                                        </td>
+                                        <td>
+                                            @if (item.Archived)
+                                            {
+                                                <span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">
+                                                    Archived
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">
+                                                    Not Archived
+                                                </span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Project.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.TicketType.Name)
+                                        </td>
+                                        <td>
+                                            @if (item.TicketPriority.Name == "Low")
+                                            {
+                                                <span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">
+                                                    @item.TicketPriority.Name
+                                                </span>
+                                            }
+                                            else if(item.TicketPriority.Name == "Medium")
+                                            {
+                                                <span class="badge bg-primary-transparent rounded-pill text-primary p-2 px-3">
+                                                    @item.TicketPriority.Name
+                                                </span>
+                                            }
+                                            else if(item.TicketPriority.Name == "High")
+                                            {
+                                                <span class="badge bg-warning-transparent rounded-pill text-warning p-2 px-3">
+                                                    @item.TicketPriority.Name
+                                                </span>
+                                            }
+                                            else if (item.TicketPriority.Name == "Urgent")
+                                            {
+                                                <span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">
+                                                    @item.TicketPriority.Name
+                                                </span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (item.TicketStatus.Name == "New")
+                                            {
+                                                <span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">
+                                                    @item.TicketStatus.Name
+                                                </span>
+                                            }
+                                            else if(item.TicketStatus.Name == "Development")
+                                            {
+                                                <span class="badge bg-warning-transparent rounded-pill text-warning p-2 px-3">
+                                                    @item.TicketStatus.Name
+                                                </span>
+                                            }
+                                            else if(item.TicketStatus.Name == "Testing")
+                                            {
+                                                <span class="badge bg-primary-transparent rounded-pill text-primary p-2 px-3">
+                                                    @item.TicketStatus.Name
+                                                </span>
+                                            }
+                                            else if (item.TicketStatus.Name == "Resolved")
+                                            {
+                                                <span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">
+                                                    @item.TicketStatus.Name
+                                                </span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.OwnerUser.FullName)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.DeveloperUser.FullName)
+                                        </td>
+                                        <td>
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn text-primary btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Details"><span class="fe fe-file-text fs-14"></span></a>
+
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn text-warning btn-sm" data-bs-toggle="tooltip" data-bs-original-title="Edit"><span class="fe fe-edit fs-14"></span></a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- End Row -->
 </div>
-<!-- End Row -->
 
 @section Scripts{
     <!-- DATA TABLE JS-->

@@ -5,7 +5,6 @@
     ViewData["Title"] = "Log in";
 }
 
-<h1>@ViewData["Title"]</h1>
 <div class="row">
     <!-- CONTAINER OPEN -->
                 <div class="col col-login mx-auto mt-7">
@@ -58,7 +57,8 @@
                                                     </button>
                                                 </div>
                                                 <div class="text-center pt-3">
-                                                    <p class="text-dark mb-0">Not a member?<a href="register.html" class="text-primary ms-1">Sign UP</a></p>
+                                                    @* <p class="text-dark mb-0">Not a member?<a href="register.html" class="text-primary ms-1">Sign UP</a></p> *@
+                                                    <p class="text-dark mb-0"><a asp-controller="Home" asp-action="Index" class="text-primary ms-1">Back</a></p>
                                                 </div>
                                                 <label class="login-social-icon"><span>Login with Social</span></label>
                                                 <div class="d-flex justify-content-center">

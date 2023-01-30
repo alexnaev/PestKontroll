@@ -4,73 +4,75 @@
     ViewData["Title"] = "Create";
 }
 
-<div class="side-app">
+<div class="main-content app-content mt-0">
+    <div class="side-app">
 
-    <!-- CONTAINER -->
-    <div class="main-container container-fluid">
+        <!-- CONTAINER -->
+        <div class="main-container container-fluid">
 
-        <!-- ROW-1 OPEN -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Create New Ticket</div>
-                    </div>
-                    <div class="card-body">
-                        <form asp-action="Create" method="post">
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="row mb-4">
-                                <label asp-for="Title" class="col-md-3 form-label"></label>
-                                <div class="col-md-9">
-                                    <input asp-for="Title" class="form-control" />
-                                    <span asp-validation-for="Title" class="text-danger"></span>
+            <!-- ROW-1 OPEN -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Create New Ticket</div>
+                        </div>
+                        <div class="card-body">
+                            <form asp-action="Create" method="post">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="row mb-4">
+                                    <label asp-for="Title" class="col-md-3 form-label"></label>
+                                    <div class="col-md-9">
+                                        <input asp-for="Title" class="form-control" />
+                                        <span asp-validation-for="Title" class="text-danger"></span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row mb-4">
-                                <label asp-for="ProjectId" class="col-md-3 form-label"></label>
-                                <div class="col-md-9">
-                                    <select asp-for="ProjectId" asp-items="ViewBag.ProjectId" class="form-control form-select select2"></select>
+                                <div class="row mb-4">
+                                    <label asp-for="ProjectId" class="col-md-3 form-label"></label>
+                                    <div class="col-md-9">
+                                        <select asp-for="ProjectId" asp-items="ViewBag.ProjectId" class="form-control form-select select2"></select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row mb-4">
-                                <label asp-for="TicketTypeId" class="col-md-3 form-label"></label>
-                                <div class="col-md-9">
-                                    <select asp-for="TicketTypeId" asp-items="ViewBag.TicketTypeId" class="form-control form-select select2"></select>
+                                <div class="row mb-4">
+                                    <label asp-for="TicketTypeId" class="col-md-3 form-label"></label>
+                                    <div class="col-md-9">
+                                        <select asp-for="TicketTypeId" asp-items="ViewBag.TicketTypeId" class="form-control form-select select2"></select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row mb-4">
-                                <label asp-for="TicketPriorityId" class="col-md-3 form-label"></label>
-                                <div class="col-md-9">
-                                    <select asp-for="TicketPriorityId" asp-items="ViewBag.TicketPriorityId" class="form-control form-select select2"></select>
+                                <div class="row mb-4">
+                                    <label asp-for="TicketPriorityId" class="col-md-3 form-label"></label>
+                                    <div class="col-md-9">
+                                        <select asp-for="TicketPriorityId" asp-items="ViewBag.TicketPriorityId" class="form-control form-select select2"></select>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Row -->
-                            <div class="row">
-                                <label asp-for="Description" class="col-md-3 form-label mb-4"></label>
-                                <div class="col-md-9 mb-4">
-                                    <textarea asp-for="Description" class="content"></textarea>
-                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                <!-- Row -->
+                                <div class="row">
+                                    <label asp-for="Description" class="col-md-3 form-label mb-4"></label>
+                                    <div class="col-md-9 mb-4">
+                                        <textarea asp-for="Description" class="content"></textarea>
+                                        <span asp-validation-for="Description" class="text-danger"></span>
+                                    </div>
                                 </div>
-                            </div>
-                            <!--End Row-->
+                                <!--End Row-->
 
-                            <div class="row mt-3">
-                                <div class="col-md-3"></div>
-                                <div class="col-md-9">
-                                    <input type="submit" value="Create" class="btn btn-primary" />
+                                <div class="row mt-3">
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-9">
+                                        <input type="submit" value="Create" class="btn btn-primary" />
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
+            <!-- /ROW-1 CLOSED -->
         </div>
-        <!-- /ROW-1 CLOSED -->
+        <!-- CONTAINER CLOSED -->
     </div>
-    <!-- CONTAINER CLOSED -->
+    <!--app-content closed-->
 </div>
-<!--app-content closed-->
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
