@@ -189,27 +189,24 @@
 											</h6>
 											@if (history.Description.Contains("New Ticket Created"))
 											{
-												<p class="text-muted fs-12">@history.User.FullName added ticket <a href="javascript:void(0)"
-													class="fw-semibold"> @history.Ticket.Title</a></p>
+												<p class="text-muted fs-12">@history.User.FullName added ticket <a asp-controller="Tickets" asp-action="Details" asp-route-id="@history.Ticket.Id" class="fw-semibold"> @history.Ticket.Title</a></p>
 											}
 											else if (history.Property.Equals("TicketComment") || history.Property.Equals("TicketAttachment"))
 											{
-												<p class="text-muted fs-12">@history.User.FullName added @history.Property on<a href="javascript:void(0)"
-													class="fw-semibold"> @history.Ticket.Title</a></p>
+												<p class="text-muted fs-12">@history.User.FullName added @history.Property on<a asp-controller="Tickets" asp-action="Details" asp-route-id="@history.Ticket.Id" class="fw-semibold"> @history.Ticket.Title</a></p>
 											}
 											else
 											{
-												<p class="text-muted fs-12">@history.User.FullName edited @history.Property on<a href="javascript:void(0)"
-													class="fw-semibold"> @history.Ticket.Title</a></p>
+												<p class="text-muted fs-12">@history.User.FullName edited @history.Property on<a asp-controller="Tickets" asp-action="Details" asp-route-id="@history.Ticket.Id" class="fw-semibold"> @history.Ticket.Title</a></p>
 											}
 										</div>
-										<div class="ms-auto d-md-flex">
+										@* <div class="ms-auto d-md-flex">
 											<a href="javascript:void(0)" class="text-muted me-2" data-bs-toggle="tooltip"
 												data-bs-placement="top" title="Edit" aria-label="Edit"><span
 													class="fe fe-edit"></span></a>
 											<a href="javascript:void(0)" class="text-muted"><span
 													class="fe fe-trash-2"></span></a>
-										</div>
+										</div> *@
 									</li>
 								}
 							</ul>
@@ -628,13 +625,14 @@
                 label: 'Projects',
                 data: [@Model.Projects.Where(p => p.ProjectPriority.Name == "Low").Count(), @Model.Projects.Where(p => p.ProjectPriority.Name == "Medium").Count(), @Model.Projects.Where(p => p.ProjectPriority.Name == "High").Count(), @Model.Projects.Where(p => p.ProjectPriority.Name == "Urgent").Count()],
                 borderColor: "#6c5ffc",
-                borderWidth: "0",
+                borderWidth: 0,
                 backgroundColor: "#6c5ffc"
             }, {
                 label: 'Tickets',
                 data: [@Model.Tickets.Where(p => p.TicketPriority.Name == "Low").Count(), @Model.Tickets.Where(p => p.TicketPriority.Name == "Medium").Count(), @Model.Tickets.Where(p => p.TicketPriority.Name == "High").Count(), @Model.Tickets.Where(p => p.TicketPriority.Name == "Urgent").Count()],
                 borderColor: "#05c3fb",
-                borderWidth: "0",
+                borderWidth: 0,
+				borderRadius: 0,
                 backgroundColor: "#05c3fb"
             }]
         },
