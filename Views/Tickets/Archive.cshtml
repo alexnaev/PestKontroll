@@ -4,10 +4,10 @@
     ViewData["Title"] = "Archive";
 }
 
-<h1>Archive</h1>
+<div class="main-content app-content mt-0">
+    <h1>Archive</h1>
 
-<h3>Are you sure you want to archive this ticket?</h3>
-<div>
+    <h3>Are you sure you want to archive this ticket?</h3>
     <h4>Ticket</h4>
     <hr />
     <dl class="row">
@@ -82,6 +82,6 @@
     <form asp-action="Archive">
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Archive" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="AllTickets">Back to List</a>
     </form>
 </div>
