@@ -17,6 +17,8 @@
     var end = Model.EndDate.DateTime;
     var today = DateTime.Now;
     var percent = today >= end ? 100 : today < start ? 0 : Math.Round((today.Subtract(start)) / (end.Subtract(start)) * 100);
+    var timeLeft = 100 - percent;
+    var daysToDeadline = Math.Round((Convert.ToDateTime(end) - DateTime.Now).TotalDays);
 
     var Ttotal = Model.Tickets.Count();
     var Tfalse = Model.Tickets.Count(t => t.TicketStatus.Name != nameof(PKTicketStatus.Resolved) && t.Archived == true);
@@ -35,6 +37,117 @@
 <div class="main-content app-content mt-0">
     <div class="container-fluid">
         <div class="row gy-2">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="wideget-user mb-2">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12">
+                                    <div class="row">
+                                        <div class="panel profile-cover">
+                                            <div class="profile-cover__action bg-img"></div>
+                                            <div class="profile-cover__img">
+                                                <div class="profile-img-1">
+                                                    @if (Model.ImageFileData != null)
+                                                    {
+                                                        <img class="avatar brround avatar-md me-3" style="width:120px;height:120px;" src="data:image/*;base64,@(Convert.ToBase64String(Model.ImageFileData))" alt="img" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <img class="avatar brround avatar-md me-3" style="width:120px;height:120px;" src="" alt="img" />
+                                                    }
+                                                </div>
+                                                <div class="profile-img-content text-dark text-start">
+                                                    <div class="text-dark">
+                                                        <h3 class="h3 mb-2">@Model.Name</h3>
+                                                        <h5 class="text-muted">
+                                                            Priority: 
+                                                            @if (Model.ProjectPriority?.Name == "Low")
+                                                            {
+                                                                <span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">
+                                                                    @Model.ProjectPriority?.Name
+                                                                </span>
+                                                            }
+                                                            else if(Model.ProjectPriority?.Name == "Medium")
+                                                            {
+                                                                <span class="badge bg-primary-transparent rounded-pill text-primary p-2 px-3">
+                                                                    @Model.ProjectPriority?.Name
+                                                                </span>
+                                                            }
+                                                            else if(Model.ProjectPriority?.Name == "High")
+                                                            {
+                                                                <span class="badge bg-warning-transparent rounded-pill text-warning p-2 px-3">
+                                                                    @Model.ProjectPriority?.Name
+                                                                </span>
+                                                            }
+                                                            else if (Model.ProjectPriority?.Name == "Urgent")
+                                                            {
+                                                                <span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">
+                                                                    @Model.ProjectPriority?.Name
+                                                                </span>
+                                                            }
+                                                        </h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="btn-profile">
+                                                @if (User.IsInRole(nameof(Roles.Admin)) || pkUser.Id == projectManager?.Id)
+                                                {
+                                                    <a asp-controller="Projects" asp-action="Edit" asp-route-id="@Model.id" class="btn btn-primary mt-1 mb-1"> <i class="fe fe-edit fs-14"></i> <span>Edit</span></a>
+
+                                                    @if (!Model.Archived)
+                                                    {
+                                                        <a asp-controller="Projects" asp-action="Archive" asp-route-id="@Model.id" class="btn btn-danger mt-1 mb-1"> <i class="bi-archive fs-14"></i> <span>Archive</span></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a asp-controller="Projects" asp-action="Restore" asp-route-id="@Model.id" class="btn btn-success mt-1 mb-1"> <i class="bi-archive fs-14"></i> <span>Restore</span></a>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="px-0 px-sm-4">
+                                        <div class="social social-profile-buttons mt-5 float-end">
+                                            <div class="mt-3" style="width: 30rem;">
+                                                <div class="mt-3"><strong>Time To Deadline</strong></div>
+                                                <div class="progress">
+                                                    @if (percent == 100)
+                                                    {
+                                                        <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: @percent%;">
+                                                            <span class="progress-value">Deadline Passed</span>
+                                                        </div>
+                                                    }
+                                                    else if (percent >= 75)
+                                                    {
+                                                        <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: @percent%;">
+                                                            <span class="progress-value">@daysToDeadline Days To Deadline</span>
+                                                        </div>
+                                                    }
+                                                    else if (percent >= 50)
+                                                    {
+                                                        <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: @percent%;">
+                                                            <span class="progress-value">@daysToDeadline Days To Deadline</span>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: @percent%;">
+                                                            <span class="progress-value">@daysToDeadline Days To Deadline</span>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             @*Project Activity*@
             <div class="col-md-3 col mt-2">
                 <div class="card m-1 p-2">
@@ -80,47 +193,34 @@
             <div class="col-md-6 col mt-2">
                 <div class="card m-1 p-2">
                     <div class="card-header">
-                        <h4 class="card-title fw-semibold">@Model.Name</h4>
+                        <h4 class="card-title fw-semibold">Project Details</h4>
                     </div>
                     <div class="card-body" style="overflow-y:auto;height:25rem;">
-                        <div class="d-flex justify-content-between mb-3">
-                            <strong>Priority:&nbsp;</strong>
-                            @if (Model.ProjectPriority?.Name == "Low")
-                            {
-                                <span class="badge bg-success">
-                                    @Model.ProjectPriority?.Name
-                                </span>
-                            }
-                            else if (Model.ProjectPriority?.Name == "Medium")
-                            {
-                                <span class="badge bg-primary">
-                                    @Model.ProjectPriority?.Name
-                                </span>
-                            }
-                            else if (Model.ProjectPriority?.Name == "High")
-                            {
-                                <span class="badge bg-warning">
-                                    @Model.ProjectPriority?.Name
-                                </span>
-                            }
-                            else if (Model.ProjectPriority?.Name == "Urgent")
-                            {
-                                <span class="badge bg-danger">
-                                    @Model.ProjectPriority?.Name
-                                </span>
-                            }
+                        <div class="row mb-3">
                             @*Project Status*@
-                            @if (today < end && today >= start)
+                            @if (today < end && today >= start && !Model.Archived)
                             {
-                                <div class="ms-auto"><strong>Status:&nbsp;</strong><span class="badge bg-success">Active</span></div>
+                                <div class="col-6 col-lg-2 mt-3"><strong>Status:&nbsp;</strong></div>
+                                <div class="col-6 col-lg-2 mt-3"><span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">Active</span></div>
+                            }
+                            else if (today > end && !Model.Archived)
+                            {
+                                <div class="col-6 col-lg-2 mt-3"><strong>Status:&nbsp;</strong></div>
+                                <div class="col-6 col-lg-2 mt-3"><span class="badge bg-warning-transparent rounded-pill text-warning p-2 px-3">Overdue</span></div>
                             }
                             else
                             {
-                                <div class="ms-auto"><strong>Status:&nbsp;</strong><span class="badge bg-danger">Inactive</span></div>
+                                <div class="col-6 col-lg-2 mt-3"><strong>Status:&nbsp;</strong></div>
+                                <div class="col-6 col-lg-2 mt-3"><span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">Inactive</span></div>
                             }
+                            <div class="col-6 col-lg-2 mt-3"><strong>Start Date:&nbsp;</strong></div>
+                            <div class="col-6 col-lg-2 mt-3"><span class="badge bg-success-transparent rounded-pill text-success p-2 px-3">@Model.StartDate.ToString("dd MMM yyyy")</span></div>
+                            <div class="col-6 col-lg-2 mt-3"><strong>Deadline:&nbsp;</strong></div>
+                            <div class="col-6 col-lg-2 mt-3"><span class="badge bg-danger-transparent rounded-pill text-danger p-2 px-3">@Model.EndDate.ToString("dd MMM yyyy")</span></div>
                         </div>
+
                         <p><strong>Description:</strong><br />@Model.Description</p>
-                        <div class="progress-container progress-info m-b-25 mt-5">
+                        @* <div class="progress-container progress-info m-b-25 mt-5">
                             <div class="d-flex justify-content-between">
                                 <div><strong>Start Date:</strong>&nbsp;<span class="text-success">@Model.StartDate.ToString("dd MMM yyyy")</span></div>
                                 <div><strong>Deadline:</strong>&nbsp;<span class="text-danger">@Model.EndDate.ToString("dd MMM yyyy")</span></div>
@@ -136,7 +236,7 @@
                                     <span class="progress-value">@projectProgress% Tickets Resolved</span>
                                 </div>
                             </div>
-                        </div>
+                        </div> *@
                     </div>
                 </div>
             </div>
@@ -165,7 +265,7 @@
                                     <p class="text-muted m-b-0">Project Manager</p>
                                     @if (User.IsInRole(nameof(Roles.Admin)) || pkUser.Id == projectManager.Id)
                                     {
-                                        <a class="btn btn-xs alert-primary" style="font:small" asp-action="AssignMembers" asp-controller="Projects" asp-route-id="@Model.id">Manage Team</a>
+                                        <a class="btn btn-xs alert-primary" style="font:small" asp-action="AssignMembers" asp-controller="Projects" asp-route-id="@Model.id"><span class="fe fe-users fs-14"></span> Manage Team</a>
                                     }
                                 </div>
                             </div>
@@ -187,7 +287,21 @@
 
                             @foreach (PKUser member in await ProjectService.GetAllProjectMembersExeptPMAsync(Model.id))
                             {
-                                <li class="">
+                                <div class="media overflow-visible">
+                                    @if (member.AvatarFileData != null)
+                                    {
+                                        <img class="avatar brround avatar-md me-3" src="data:image/*;base64,@(Convert.ToBase64String(member.AvatarFileData))" alt="avatar-img" />
+                                    }
+                                    else
+                                    {
+                                        <img class="avatar brround avatar-md me-3" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="avatar-img" />
+                                    }
+                                    <div class="media-body valign-middle mt-2">
+                                        <a href="javascript:void(0)" class=" fw-semibold text-dark">@member.FullName</a>
+                                        <p class="" style="font-size:x-small">[@((await UserManager.GetRolesAsync(member)).FirstOrDefault())]</p>
+                                    </div>
+                                </div>
+                                @* <li class="">
                                     <a href="">
                                         <div class="media">
                                             @if (member.AvatarFileData != null)
@@ -205,7 +319,7 @@
                                         <span class="" style="font-size:small">@member.FullName</span><br />
                                         <span class="" style="font-size:x-small">[@((await UserManager.GetRolesAsync(member)).FirstOrDefault())]</span>
                                     </div>
-                                </li>
+                                </li> *@
                             }
                         </ul>
                     </div>
