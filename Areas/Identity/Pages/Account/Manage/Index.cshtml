@@ -7,7 +7,88 @@
 
 <h3>@ViewData["Title"]</h3>
 <partial name="_StatusMessage" for="StatusMessage" />
-<div class="row">
+<!-- ROW-1 OPEN -->
+                        <div class="row">
+                            <div class="col-xl-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-title">Edit Password</div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="text-center chat-image mb-5">
+                                            <div class="avatar avatar-xxl chat-profile mb-3 brround">
+                                                <img alt="avatar" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" class="brround">
+                                            </div>
+                                            <div class="main-chat-msg-name">
+                                                    <h5 class="mb-1 text-dark fw-semibold">@Model.FirstName @Model.LastName</h5>
+                                                <p class="text-muted mt-0 mb-0 pt-0 fs-13">@Model.Role</p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Current Password</label>
+                                            <div class="wrap-input100 validate-input input-group" id="Password-toggle">
+                                                <a href="javascript:void(0)" class="input-group-text bg-white text-muted">
+                                                    <i class="zmdi zmdi-eye text-muted" aria-hidden="true"></i>
+                                                </a>
+                                                <input class="input100 form-control" type="password" placeholder="Current Password" autocomplete="current-password">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">New Password</label>
+                                            <div class="wrap-input100 validate-input input-group" id="Password-toggle1">
+                                                <a href="javascript:void(0)" class="input-group-text bg-white text-muted">
+                                                    <i class="zmdi zmdi-eye text-muted" aria-hidden="true"></i>
+                                                </a>
+                                                <input class="input100 form-control" type="password" placeholder="New Password" autocomplete="new-password">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Confirm Password</label>
+                                            <div class="wrap-input100 validate-input input-group" id="Password-toggle2">
+                                                <a href="javascript:void(0)" class="input-group-text bg-white text-muted">
+                                                    <i class="zmdi zmdi-eye text-muted" aria-hidden="true"></i>
+                                                </a>
+                                                <input class="input100 form-control" type="password" placeholder="Confirm Password" autocomplete="new-password">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer text-end">
+                                        <a href="javascript:void(0)" class="btn btn-primary">Update</a>
+                                        <a href="javascript:void(0)" class="btn btn-danger">Cancel</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Edit Profile</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-12">
+                                                <div class="form-group">
+                                                    <label for="exampleInputname">First Name</label>
+                                                    <input asp-for="FirstName" class="form-control" disabled placeholder="First Name">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-12">
+                                                <div class="form-group">
+                                                    <label for="exampleInputname1">Last Name</label>
+                                                    <input asp-for="LastName" class="form-control" disabled placeholder="Enter Last Name">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Email address</label>
+                                            <input asp-for="Username" class="form-control" disabled type="email" class="form-control" id="exampleInputEmail1" placeholder="Email address">
+                                        </div>
+                                    </div>
+                                    <div class="card-footer text-end">
+                                        <a href="javascript:void(0)" class="btn btn-success my-1">Save</a>
+                                        <a href="javascript:void(0)" class="btn btn-danger my-1">Cancel</a>
+                                    </div>
+                                </div>
+@* <div class="row">
     <div class="col-md-6">
         <form id="profile-form" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -23,7 +104,7 @@
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </form>
     </div>
-</div>
+</div> *@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

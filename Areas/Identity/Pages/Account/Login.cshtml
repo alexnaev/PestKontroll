@@ -49,7 +49,7 @@
                                                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                                                 </div>
                                                 <div class="text-end pt-4">
-                                                    <p class="mb-0"><a href="forgot-password.html" class="text-primary ms-1">Forgot Password?</a></p>
+                                                    @* <p class="mb-0"><a href="forgot-password.html" class="text-primary ms-1">Forgot Password?</a></p> *@
                                                 </div>
                                                 <div class="container-login100-form-btn">
                                                     <button id="login-submit" type="submit" class="login100-form-btn btn-primary">
@@ -60,22 +60,31 @@
                                                     @* <p class="text-dark mb-0">Not a member?<a href="register.html" class="text-primary ms-1">Sign UP</a></p> *@
                                                     <p class="text-dark mb-0"><a asp-controller="Home" asp-action="Index" class="text-primary ms-1">Back</a></p>
                                                 </div>
-                                                <label class="login-social-icon"><span>Login with Social</span></label>
+                                                <label class="login-social-icon"><span>Demo Accounts</span></label>
                                                 <div class="d-flex justify-content-center">
-                                                    <a href="javascript:void(0)">
-                                                        <div class="social-login me-4 text-center">
-                                                            <i class="fa fa-google"></i>
+                                                    <a href="javascript:DemoLogin('btadmin1@bugtracker.com')">
+                                                        <div class="social-login me-5 text-center">
+                                                            <i class="fa fa-user"></i>
                                                         </div>
+                                                        <small>Admin</small>
                                                     </a>
-                                                    <a href="javascript:void(0)">
-                                                        <div class="social-login me-4 text-center">
-                                                            <i class="fa fa-facebook"></i>
+                                                    <a href="javascript:DemoLogin('projectmanager1@bugtracker.com')">
+                                                        <div class="social-login me-5 text-center">
+                                                            <i class="fa fa-user"></i>
                                                         </div>
+                                                        <small>Project<br />Manager</small>
                                                     </a>
-                                                    <a href="javascript:void(0)">
+                                                    <a href="javascript:DemoLogin('developer1@bugtracker.com')">
+                                                        <div class="social-login me-5 text-center">
+                                                            <i class="fa fa-user"></i>
+                                                        </div>
+                                                        <small>Developer</small>
+                                                    </a>
+                                                    <a href="javascript:DemoLogin('submitter1@bugtracker.com')">
                                                         <div class="social-login text-center">
-                                                            <i class="fa fa-twitter"></i>
+                                                            <i class="fa fa-user"></i>
                                                         </div>
+                                                        <small>Submitter</small>
                                                     </a>
                                                 </div>
                                             </form>
@@ -183,4 +192,12 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function DemoLogin(userName){
+            document.getElementById('Input_Email').value = userName;
+            document.getElementById('Input_Password').value = "Abc&123!";
+            document.getElementById('account').submit();
+        }
+    </script>
 }

@@ -31,6 +31,9 @@ namespace PestKontroll.Areas.Identity.Pages.Account.Manage
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         public string Username { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Role { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -65,8 +68,14 @@ namespace PestKontroll.Areas.Identity.Pages.Account.Manage
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+            var firstName = user.FirstName;
+            var lastName = user.LastName;
 
             Username = userName;
+            FirstName = firstName;
+            LastName = lastName;
+            Role = role;
 
             Input = new InputModel
             {
